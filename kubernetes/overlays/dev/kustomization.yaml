@@ -1,8 +1,18 @@
 
 bases:
 - knative-operator/
-
+- cnpg-operator/
+- database/
 
 resources:
+- knative-serving.yaml
 - knative-eventing.yaml
 - kafka.yaml
+
+secretGenerator:
+- name: usdf-prompt-processing-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/username
+  - etc/.secrets/password
