@@ -1,0 +1,6 @@
+namespace: database
+
+resources:
+- ns.yaml
+- cnpg-database.yaml
+- cnpg-pooler.yaml
