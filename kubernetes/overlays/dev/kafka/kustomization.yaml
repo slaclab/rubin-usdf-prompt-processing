@@ -1,0 +1,7 @@
+
+namespace: kafka
+
+resources:
+- ns.yaml
+- strimzi-operator.yaml
+- kafka-persistent-single.yaml

@@ -1,0 +1,8 @@
+
+bases:
+- knative-operator/
+
+
+resources:
+- knative-eventing.yaml
+- kafka.yaml
