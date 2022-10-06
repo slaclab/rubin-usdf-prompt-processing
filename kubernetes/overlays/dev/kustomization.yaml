@@ -16,3 +16,10 @@ secretGenerator:
   files:
   - etc/.secrets/username
   - etc/.secrets/password
+
+- name: usdf-butler-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secretsbutler/username
+  - etc/.secretsbutler/password

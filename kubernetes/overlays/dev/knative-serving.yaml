@@ -9,6 +9,17 @@ metadata:
   name: knative-serving
   namespace: knative-serving
 spec:
+  deployments:
+  - name: controller
+    env:
+      - container: controller
+        envVars:
+        - name: HTTP_PROXY
+          value: http://sdfproxy.sdf.slac.stanford.edu:3128
+        - name: HTTPS_PROXY
+          value: http://sdfproxy.sdf.slac.stanford.edu:3128
+        - name: NO_PROXY
+          value: "localhost,.cluster.local,.svc,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.cluster.local,.svc,.svc.cluster,.svc.cluster.local,.svc.cluster.local.,.slac.stanford.edu,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
   ingress:
     kourier:
       enabled: true

@@ -2,13 +2,18 @@ KNATIVE_VERSION ?= v1.7.1
 CNPG_VERSION ?= 1.17
 CNPG_VERSION_MINOR ?= 0
 SECRET_PATH ?= secret/rubin/usdf-prompt-processing-dev/postgres
+BUTLER_SECRET_PATH ?= secret/rubin/usdf-butler/postgres
 
 get-secrets-from-vault:
 	mkdir -p etc/.secrets/
 	set -e; for i in username password; do vault kv get --field=$$i $(SECRET_PATH) > etc/.secrets/$$i ; done
+	
+	mkdir -p etc/.secretsbutler/
+	set -e; for i in username password; do vault kv get --field=$$i $(BUTLER_SECRET_PATH) > etc/.secretsbutler/$$i ; done
 
 clean-secrets:
 	rm -rf etc/.secrets/
+	rm -rf etc/.secretsbutler/
 
 update-cnpg-operator:
 	curl -L https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-$(CNPG_VERSION)/releases/cnpg-$(CNPG_VERSION).$(CNPG_VERSION_MINOR).yaml > cnpg-operator/cnpg-operator.yaml
