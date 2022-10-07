@@ -8,8 +8,8 @@ get-secrets-from-vault:
 	mkdir -p etc/.secrets/
 	set -e; for i in username password; do vault kv get --field=$$i $(SECRET_PATH) > etc/.secrets/$$i ; done
 	
-	mkdir -p etc/.secretsbutler/
-	set -e; for i in username password; do vault kv get --field=$$i $(BUTLER_SECRET_PATH) > etc/.secretsbutler/$$i ; done
+	mkdir -p etc/.secrets/butler/
+	set -e; for i in username password; do vault kv get --field=$$i $(BUTLER_SECRET_PATH) > etc/.secrets/butler/$$i ; done
 
 clean-secrets:
 	rm -rf etc/.secrets/
