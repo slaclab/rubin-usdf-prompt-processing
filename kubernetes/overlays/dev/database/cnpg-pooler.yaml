@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing-rw
+  name: prompt-processing-pooler-rw
 spec:
   cluster:
     name: prompt-processing
