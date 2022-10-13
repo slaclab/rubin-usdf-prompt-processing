@@ -1,0 +1,49 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: yee-user
+  labels:
+    strimzi.io/cluster: yee-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: my-topic
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: topic
+          name: my-topic
+          patternType: literal
+        operation: Write
+        host: "*"
+      - resource:
+          type: topic
+          name: my-topic
+          patternType: literal
+        operation: Create
+        host: "*"
+      - resource:
+          type: topic
+          name: my-topic
+          patternType: literal
+        operation: Describe
+        host: "*"
+      - resource:
+          type: group
+          name: my-group
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: cluster
+          name: my-cluster
+          patternType: literal
+        operation: Alter
+        host: "*"
+
