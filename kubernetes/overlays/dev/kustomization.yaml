@@ -7,7 +7,11 @@ bases:
 resources:
 - knative-serving.yaml
 - knative-eventing.yaml
-- kafka.yaml
+- kafka-knative.yaml
+
+# can't include in kustomize as its not local
+#patches:
+#- knative-serving-patch.yaml
 
 secretGenerator:
 - name: usdf-prompt-processing-creds
