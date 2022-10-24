@@ -1,0 +1,76 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: pp-bucket-notify-user
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # Allow all operations on the pp-notify-db topic
+      # Read, Write, and DescribeConfigs are known to be required
+      - resource:
+          type: topic
+          name: pp-bucket-notify-topic
+          patternType: literal
+        operation: All
+        type: allow
+        host: "*"
+      - resource:
+          type: topic
+          name: pp-bucket-notify-topic
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: topic
+          name: pp-bucket-notify-topic
+          patternType: literal
+        operation: Describe
+        host: "*"
+      - resource:
+          type: group
+          name: bucket-notify-group
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: group
+          name: bucket-notify-group
+          patternType: literal
+        operation: Describe
+        host: "*"
+      - resource:
+          type: topic
+          name: __consumer_offsets
+          patternType: literal
+        operation: Describe
+        type: allow
+      - resource:
+          type: topic
+          name: next-visit-topic
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: topic
+          name: next-visit-topic
+          patternType: literal
+        operation: Describe
+        host: "*"
+      - resource:
+          type: group
+          name: knative-group
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: group
+          name: knative-group
+          patternType: literal
+        operation: Describe
+        host: "*"

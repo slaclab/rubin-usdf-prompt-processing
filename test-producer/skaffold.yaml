@@ -1,0 +1,13 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: test-producer
+build:
+  artifacts:
+  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-producer-test
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - producer-job.yaml

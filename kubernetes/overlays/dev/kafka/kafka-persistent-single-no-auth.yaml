@@ -1,34 +1,33 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  name: my-cluster
+  name: prompt-processing
+  namespace: kafka
 spec:
   kafka:
     version: 3.2.3
     replicas: 1
     listeners:
-    - name: plain
-      port: 9092
-      type: internal
-      tls: false
-    - name: tls
-      port: 9093
-      type: internal
-      tls: true
-    - name: external
-      port: 9094
-      type: loadbalancer
-      tls: true
-      authentication:
-        type: scram-sha-512
-      configuration:
-        bootstrap:
-          annotations:
-            metallb.universe.tf/address-pool: sdf-services
-        brokers:
-        - broker: 0
-          annotations:
-            metallb.universe.tf/address-pool: sdf-services
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+      - name: external
+        port: 9094
+        tls: false
+        type: loadbalancer
+        configuration:
+          bootstrap:
+            annotations:
+              metallb.universe.tf/address-pool: sdf-services
+          brokers:
+          - broker: 0
+            annotations:
+              metallb.universe.tf/address-pool: sdf-services
     config:
       offsets.topic.replication.factor: 1
       transaction.state.log.replication.factor: 1
