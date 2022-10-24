@@ -4,5 +4,3 @@ namespace: knative-operator
 resources:
 - ns.yaml
 - knative-operator.yaml
-
-
