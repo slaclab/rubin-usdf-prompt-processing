@@ -1,0 +1,41 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: pp-test
+  namespace: knative-eventing
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
+        autoscaling.knative.dev/target: "1"
+        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/max-scale: "100"
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
+          env:
+            - name: RUBIN_INSTRUMENT
+              value: "lsst.obs.subaru.HyperSuprimeCam"
+            - name: PUBSUB_VERIFICATION_TOKEN
+              value: "rubin-prompt-proto-main"
+            - name: IMAGE_BUCKET
+              value: "rubin-prompt-proto-main"
+            - name: CALIB_REPO
+              value: "gs://rubin-prompt-proto-main/central_repo/butler-ip.yaml"
+            - name: IP_APDB
+              value: "10.109.19.42"
+            - name: IP_REGISTRY
+              value: "10.229.96.5:5432"
+            - name: PSQL_REGISTRY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: usdf-butler-creds
+                  key: password
+            - name: PSQL_APDB_PASS
+              valueFrom:
+                  secretKeyRef:
+                    name: usdf-prompt-processing-creds
+                    key: password
