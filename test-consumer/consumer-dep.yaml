@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-to-knative-serving
+  namespace: knative-eventing
+  labels:
+    app: kafka-consumer-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-to-knative-serving
+  template:
+    metadata:
+      labels:
+        app: kafka-to-knative-serving
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: consumer-python
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-test:v1.2
+        command: [ "python", "main.py"]
+        env:
+          - name: KAFKA_CLUSTER
+            value: prompt-processing-kafka-bootstrap.kafka:9092
+          - name: CONSUMER_GROUP
+            value: next-visit-notify-group
+          - name: BUCKET_NOTIFY_TOPIC
+            value: next-visit-test-topic
+          - name: SASL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: knative-broker-sasl
+                key: user
+          - name: SASL_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                  name: knative-broker-sasl
+                  key: password
+          - name: SASL_MECHANISM
+            value: SCRAM-SHA-512
+          - name: SECURITY_PROTOCOL
+            value: SASL_PLAINTEXT
+          - name: KNATIVE_SERVING_URL
+            value: http://next-visit-test.knative-eventing.svc.cluster.local/next-visit
+        resources:
+          requests:
+            cpu: "2"
+            memory: "128Mi"

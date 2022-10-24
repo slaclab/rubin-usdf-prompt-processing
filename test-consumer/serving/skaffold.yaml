@@ -1,0 +1,13 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: knative-test-serving
+build:
+  artifacts:
+  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/next-visit-test
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - serving.yaml

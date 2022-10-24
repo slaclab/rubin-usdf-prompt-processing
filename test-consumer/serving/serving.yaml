@@ -1,0 +1,18 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: next-visit-test
+  namespace: knative-eventing
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
+        autoscaling.knative.dev/target: "1"
+        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/max-scale: "100"
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/next-visit-test:v1.3
