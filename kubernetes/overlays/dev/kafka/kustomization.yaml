@@ -7,3 +7,4 @@ resources:
 - kafka-persistent-single.yaml
 - bucket-notify-topic.yaml
 - bucket-notify-user.yaml
+- next-visit-topic.yaml

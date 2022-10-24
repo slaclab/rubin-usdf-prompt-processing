@@ -1,0 +1,21 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: pp-bucket-notify-user-3
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  authentication:
+    type: tls
+  authorization:
+    type: simple
+    acls:
+      # Allow all operations on the pp-notify-db topic
+      # Read, Write, and DescribeConfigs are known to be required
+      - resource:
+          type: topic
+          name: pp-bucket-notify-topic
+          patternType: literal
+        operation: All
+        type: allow
