@@ -19,7 +19,6 @@ get-secrets-from-vault:
 
 clean-secrets:
 	rm -rf etc/.secrets/
-	rm -rf etc/.secretsbutler/
 
 run-kustomize:
 	kubectl kustomize .
