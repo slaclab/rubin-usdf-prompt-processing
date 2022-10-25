@@ -1,8 +1,8 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: pp-test
-  namespace: knative-eventing
+  name: prompt-proto-service
+  namespace: prompt-proto-service
 spec:
   template:
     metadata:
