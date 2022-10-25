@@ -51,3 +51,10 @@ spec:
                   secretKeyRef:
                     name: usdf-prompt-processing-creds
                     key: password
+            - name: AWS_SHARED_CREDENTIALS_FILE
+              valueFrom:
+                  secretKeyRef:
+                    name: s3-credentials
+                    key: s3_credentials_ini_file
+            - name: S3_ENDPOINT_URL
+              value: https://s3dfrgw.slac.stanford.edu
