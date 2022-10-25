@@ -41,6 +41,8 @@ spec:
               value: "ppcentralbutler"
             - name: USER_REGISTRY
               value: "pp"
+            - name: KAFKA_CLUSTER
+              value: prompt-processing-kafka-bootstrap.kafka:9092
             - name: PSQL_REGISTRY_PASS
               valueFrom:
                 secretKeyRef:
