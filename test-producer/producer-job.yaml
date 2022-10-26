@@ -3,12 +3,14 @@ kind: Job
 metadata:
   name: nextvisit-producer-
   namespace: knative-eventing
+  labels:
+    app: nextvisit-producer
 spec:
   template:
     spec:
       containers:
       - name: nextvisit-producer
-        image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-producer-nextvisit:945e3a1-dirty
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer:2cbb063-dirty
         command: [ "python3", "main.py"]
         env:
           - name: KAFKA_CLUSTER

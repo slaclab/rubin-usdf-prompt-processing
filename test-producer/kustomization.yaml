@@ -1,9 +1,10 @@
 
-namespace: knative-eventing
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: prompt-proto-service
 
 resources:
 - producer-job.yaml
 
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-nameSuffix: "202246104644"
+nameSuffix: "202210111003"
