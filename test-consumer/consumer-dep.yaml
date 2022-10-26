@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-to-knative-serving
-  namespace: knative-eventing
+  name: nextvisit-start
+  namespace: prompt-proto-service
   labels:
-    app: kafka-consumer-test
+    app: nextvisit-start
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-to-knative-serving
+      app: nextvisit-start
   template:
     metadata:
       labels:
-        app: kafka-to-knative-serving
+        app: nextvisit-start
     spec:
       imagePullSecrets:
       - name: regcred
       containers:
-      - name: consumer-python
-        image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-test:v1.2
+      - name: nextvisit-start
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-start:945e3a1-dirty
         command: [ "python", "main.py"]
         env:
           - name: KAFKA_CLUSTER
@@ -28,23 +28,5 @@ spec:
             value: next-visit-notify-group
           - name: BUCKET_NOTIFY_TOPIC
             value: next-visit-test-topic
-          - name: SASL_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: knative-broker-sasl
-                key: user
-          - name: SASL_PASSWORD
-            valueFrom:
-                secretKeyRef:
-                  name: knative-broker-sasl
-                  key: password
-          - name: SASL_MECHANISM
-            value: SCRAM-SHA-512
-          - name: SECURITY_PROTOCOL
-            value: SASL_PLAINTEXT
           - name: KNATIVE_SERVING_URL
-            value: http://next-visit-test.knative-eventing.svc.cluster.local/next-visit
-        resources:
-          requests:
-            cpu: "2"
-            memory: "128Mi"
+            value: http://prompt-proto-service.prompt-proto-service.svc.cluster.local/next-visit
