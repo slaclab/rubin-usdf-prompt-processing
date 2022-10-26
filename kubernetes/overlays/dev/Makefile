@@ -13,7 +13,6 @@ get-secrets-from-vault:
 
 clean-secrets:
 	rm -rf etc/.secrets/
-	rm -rf etc/.secretsbutler/
 
 update-cnpg-operator:
 	curl -L https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-$(CNPG_VERSION)/releases/cnpg-$(CNPG_VERSION).$(CNPG_VERSION_MINOR).yaml > cnpg-operator/cnpg-operator.yaml
