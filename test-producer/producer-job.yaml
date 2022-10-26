@@ -1,34 +1,22 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: kafka-producer-test
+  name: nextvisit-producer-
   namespace: knative-eventing
+  labels:
+    app: nextvisit-producer
 spec:
   template:
     spec:
       containers:
-      - name: kafka-producer-test
-        image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-producer-test:v1.6
+      - name: nextvisit-producer
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer:2cbb063-dirty
         command: [ "python3", "main.py"]
         env:
           - name: KAFKA_CLUSTER
-            value: my-cluster-kafka-bootstrap.kafka:9092
+            value: prompt-processing-kafka-bootstrap.kafka:9092
           - name: BUCKET_NOTIFY_TOPIC
-            value: next-visit-topic
-          - name: SASL_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: knative-broker-sasl
-                key: user
-          - name: SASL_PASSWORD
-            valueFrom:
-                secretKeyRef:
-                  name: knative-broker-sasl
-                  key: password
-          - name: SASL_MECHANISM
-            value: SCRAM-SHA-512
-          - name: SECURITY_PROTOCOL
-            value: SASL_PLAINTEXT
+            value: next-visit-test-topic
       restartPolicy: Never
       imagePullSecrets:
       - name: regcred

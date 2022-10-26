@@ -4,7 +4,7 @@ metadata:
   name: test
 build:
   artifacts:
-  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-test
+  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-start
     docker:
       dockerfile: Dockerfile
 deploy:
