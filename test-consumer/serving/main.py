@@ -17,7 +17,7 @@ def next_visit_handler():
     logging.info(f"{event['type']} and specversion event{['specversion']}")
     logging.info(f"Event data {event.data}")
 
-    time.sleep(30)  # sleep to allow for concurrency testing
+    time.sleep(2)  # sleep to allow for concurrency testing
 
     return "", 204
 
