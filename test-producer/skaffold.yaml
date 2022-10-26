@@ -4,7 +4,7 @@ metadata:
   name: test-producer
 build:
   artifacts:
-  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-producer-test
+  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/usdf-kafka-producer-nextvisit
     docker:
       dockerfile: Dockerfile
 deploy:
