@@ -8,9 +8,9 @@ import socket
 
 def acked(err, msg):
     if err is not None:
-        logging.error("Failed to deliver message: %s: %s" % (str(msg), str(err)))
+        logging.error("Failed to deliver message: %s: %s", msg.value(), err)
     else:
-        logging.info("Message produced: %s" % (str(msg)))
+        logging.info("Message produced: %s", msg.value())
 
 
 def main():
