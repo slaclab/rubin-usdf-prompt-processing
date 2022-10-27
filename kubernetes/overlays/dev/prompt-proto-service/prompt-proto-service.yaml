@@ -55,18 +55,23 @@ spec:
             secretKeyRef:
               name: usdf-prompt-processing-creds
               key: password
-        - name: AWS_SHARED_CREDENTIALS_FILE
-          valueFrom:
-            secretKeyRef:
-              name: s3-credentials
-              key: s3_credentials_ini_file
         - name: S3_ENDPOINT_URL
           value: https://s3dfrgw.slac.stanford.edu
+        - name: AWS_SHARED_CREDENTIALS_FILE
+          value: /app/s3/credentials
+        volumeMounts:
+          - mountPath: /app/s3/credentials
+            name: s3-credentials-file
+            subPath: credentials
         readinessProbe:
           successThreshold: 1
           tcpSocket:
             port: 0
         resources: {}
+      volumes:
+      - name: s3-credentials-file
+        secret:
+          secretName: s3-credentials-file
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
