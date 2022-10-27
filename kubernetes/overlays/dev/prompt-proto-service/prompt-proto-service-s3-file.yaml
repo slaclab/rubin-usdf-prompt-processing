@@ -1,0 +1,77 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: prompt-proto-service
+  namespace: prompt-proto-service
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
+        autoscaling.knative.dev/max-scale: "100"
+        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/target: "1"
+      creationTimestamp: null
+    spec:
+      containerConcurrency: 0
+      containers:
+      - env:
+        - name: RUBIN_INSTRUMENT
+          value: HSC
+        - name: PUBSUB_VERIFICATION_TOKEN
+          value: rubin-prompt-proto-main
+        - name: IMAGE_BUCKET
+          value: rubin-pp
+        - name: CALIB_REPO
+          value: s3://rubin-pp-users/central_repo/
+        - name: IP_APDB
+          value: usdf-prompt-processing-dev.slac.stanford.edu:5432
+        - name: DB_APDB
+          #value: rubin-devl
+          value: lsst-devl
+        - name: USER_APDB
+          value: rubin
+        - name: NAMESPACE_APDB
+          value: pp_apdb
+        - name: IP_REGISTRY
+          value: usdf-prompt-processing-dev.slac.stanford.edu:5432
+        - name: DB_REGISTRY
+          value: ppcentralbutler
+        - name: USER_REGISTRY
+          value: pp
+        - name: KAFKA_CLUSTER
+          value: prompt-processing-kafka-bootstrap.kafka:9092
+        - name: PSQL_REGISTRY_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: usdf-pp-creds
+        - name: PSQL_APDB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: usdf-prompt-processing-creds
+        - name: AWS_SHARED_CREDENTIALS_FILE
+          value: /app/s3/credentials
+        - name: S3_ENDPOINT_URL
+          value: https://s3dfrgw.slac.stanford.edu
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-36712
+        imagePullPolicy: Always
+        name: user-container
+        volumeMounts:
+          - mountPath: /app/s3/credentials
+            name: s3-credentials-file
+            subPath: credentials
+        readinessProbe:
+          successThreshold: 1
+          tcpSocket:
+            port: 0
+        resources: {}
+      volumes:
+      - name: s3-credentials-file
+        secret:
+          secretName: s3-credentials-file
+      enableServiceLinks: false
+      imagePullSecrets:
+      - name: regcred
+      timeoutSeconds: 300
