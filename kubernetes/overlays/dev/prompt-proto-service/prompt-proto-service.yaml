@@ -11,6 +11,8 @@ spec:
         autoscaling.knative.dev/target: "1"
         autoscaling.knative.dev/min-scale: "1"
         autoscaling.knative.dev/max-scale: "100"
+        # Update this field if `make apply` by itself doesn't make a new revision.
+        revision: "31"
       creationTimestamp: null
     spec:
       containerConcurrency: 0
