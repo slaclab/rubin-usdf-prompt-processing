@@ -15,7 +15,7 @@ spec:
       imagePullSecrets:
       - name: regcred
       containers:
-        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-36712
+        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
           imagePullPolicy: Always
           env:
             - name: RUBIN_INSTRUMENT
