@@ -31,7 +31,7 @@ spec:
           # Need explicit port for make_pgpass.py
           value: usdf-prompt-processing-dev.slac.stanford.edu:5432
         - name: DB_APDB
-          value: rubin-devl
+          value: lsst-devl
         - name: USER_APDB
           value: rubin
         - name: NAMESPACE_APDB
@@ -48,7 +48,7 @@ spec:
         - name: PSQL_REGISTRY_PASS
           valueFrom:
             secretKeyRef:
-              name: usdf-butler-creds
+              name: usdf-pp-creds
               key: password
         - name: PSQL_APDB_PASS
           valueFrom:
