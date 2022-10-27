@@ -15,49 +15,49 @@ spec:
       imagePullSecrets:
       - name: regcred
       containers:
-        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
-          imagePullPolicy: Always
-          env:
-            - name: RUBIN_INSTRUMENT
-              value: "HSC"
-            - name: PUBSUB_VERIFICATION_TOKEN
-              value: "rubin-prompt-proto-main"
-            - name: IMAGE_BUCKET
-              value: "rubin-pp"
-            - name: CALIB_REPO
-              value: "s3://rubin-pp-users/central_repo/"
-            - name: IP_APDB
-              # Need explicit port for make_pgpass.py
-              value: "usdf-prompt-processing-dev.slac.stanford.edu:5432"
-            - name: DB_APDB
-              value: "rubin-devl"
-            - name: USER_APDB
-              value: "rubin"
-            - name: NAMESPACE_APDB
-              value: "pp_apdb"
-            - name: IP_REGISTRY
-              # Need explicit port for make_pgpass.py
-              value: "usdf-prompt-processing-dev.slac.stanford.edu:5432"
-            - name: DB_REGISTRY
-              value: "ppcentralbutler"
-            - name: USER_REGISTRY
-              value: "pp"
-            - name: KAFKA_CLUSTER
-              value: prompt-processing-kafka-bootstrap.kafka:9092
-            - name: PSQL_REGISTRY_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: usdf-butler-creds
-                  key: password
-            - name: PSQL_APDB_PASS
-              valueFrom:
-                  secretKeyRef:
-                    name: usdf-prompt-processing-creds
-                    key: password
-            - name: AWS_SHARED_CREDENTIALS_FILE
-              valueFrom:
-                  secretKeyRef:
-                    name: s3-credentials
-                    key: s3_credentials_ini_file
-            - name: S3_ENDPOINT_URL
-              value: https://s3dfrgw.slac.stanford.edu
+      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
+        imagePullPolicy: Always
+        env:
+        - name: RUBIN_INSTRUMENT
+          value: HSC
+        - name: PUBSUB_VERIFICATION_TOKEN
+          value: rubin-prompt-proto-main
+        - name: IMAGE_BUCKET
+          value: rubin-pp
+        - name: CALIB_REPO
+          value: s3://rubin-pp-users/central_repo/
+        - name: IP_APDB
+          # Need explicit port for make_pgpass.py
+          value: usdf-prompt-processing-dev.slac.stanford.edu:5432
+        - name: DB_APDB
+          value: rubin-devl
+        - name: USER_APDB
+          value: rubin
+        - name: NAMESPACE_APDB
+          value: pp_apdb
+        - name: IP_REGISTRY
+          # Need explicit port for make_pgpass.py
+          value: usdf-prompt-processing-dev.slac.stanford.edu:5432
+        - name: DB_REGISTRY
+          value: ppcentralbutler
+        - name: USER_REGISTRY
+          value: pp
+        - name: KAFKA_CLUSTER
+          value: prompt-processing-kafka-bootstrap.kafka:9092
+        - name: PSQL_REGISTRY_PASS
+          valueFrom:
+            secretKeyRef:
+              name: usdf-butler-creds
+              key: password
+        - name: PSQL_APDB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: usdf-prompt-processing-creds
+              key: password
+        - name: AWS_SHARED_CREDENTIALS_FILE
+          valueFrom:
+            secretKeyRef:
+              name: s3-credentials
+              key: s3_credentials_ini_file
+        - name: S3_ENDPOINT_URL
+          value: https://s3dfrgw.slac.stanford.edu
