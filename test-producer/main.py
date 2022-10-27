@@ -25,7 +25,18 @@ def main():
         {"bootstrap.servers": kafka_cluster, "client.id": socket.gethostname()}
     )
 
-    p.produce(topic, json.dumps({"message": "test"}), callback=acked)
+    next_visit = {
+        "instrument": "NotACam",
+        "detector": 42,
+        "group": "visit-12882-20221027",
+        "snaps": 2,
+        "filter": "k1234",
+        "ra": 0.0,
+        "dec": 0.0,
+        "rot": 0.0,
+        "kind": "INVALID",
+    }
+    p.produce(topic, json.dumps(next_visit).encode("utf-8"), callback=acked)
 
     p.poll(1)
 
