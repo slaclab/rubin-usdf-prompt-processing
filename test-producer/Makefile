@@ -1,4 +1,4 @@
-DATE ?= $(shell date +%Y%M%H%M%S)
+DATE ?= $(shell date +%Y%m%d%H%M%S)
 
 run-kustomize:
 	kustomize edit set namesuffix "$(DATE)"
