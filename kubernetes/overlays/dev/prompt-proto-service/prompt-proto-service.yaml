@@ -11,12 +11,13 @@ spec:
         autoscaling.knative.dev/target: "1"
         autoscaling.knative.dev/min-scale: "1"
         autoscaling.knative.dev/max-scale: "100"
+      creationTimestamp: null
     spec:
-      imagePullSecrets:
-      - name: regcred
+      containerConcurrency: 0
       containers:
       - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
         imagePullPolicy: Always
+        name: user-container
         env:
         - name: RUBIN_INSTRUMENT
           value: HSC
@@ -61,3 +62,12 @@ spec:
               key: s3_credentials_ini_file
         - name: S3_ENDPOINT_URL
           value: https://s3dfrgw.slac.stanford.edu
+        readinessProbe:
+          successThreshold: 1
+          tcpSocket:
+            port: 0
+        resources: {}
+      enableServiceLinks: false
+      imagePullSecrets:
+      - name: regcred
+      timeoutSeconds: 300
