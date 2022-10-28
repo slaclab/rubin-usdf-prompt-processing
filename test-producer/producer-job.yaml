@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: nextvisit-producer
-        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer:2cbb063-dirty
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer:6b96ba7
         command: [ "python3", "main.py"]
         env:
           - name: KAFKA_CLUSTER
