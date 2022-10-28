@@ -1,36 +1,16 @@
 # rubin-usdf-prompt-processing
 
+This is the repository for the deployment of the prompt processing database, kafka cluster, and knative serving environment for the USDF.   It stores the kubernetes manifests, kubernetes operator configurations, and test Kafka producer and consumer code.  Deployments are done currently through make files.
 
-## K8s
+See the [prompt prototype repo](https://github.com/lsst-dm/prompt_prototype) for the prompt prototype code.
 
-[K8s Dev link](https://k8s.slac.stanford.edu/usdf-prompt-processing-dev)
+To access the kuberentes environment login [here] (https://k8s.slac.stanford.edu/usdf-prompt-processing-dev) to obtain the kubernetes commmands to login and set your context.
 
+Documentation on kafka, knative, and cnpg postgres is [here](docs)
 
-```
-kubectl port-forward svc/my-cluster-kafka-bootstrap 9093:9093 -n kafka
-```
+## Local Development Links
 
-## Kafka
+If performing local deployments below are links to kubectl and kustomize.
 
-Strimzi link [here](https://github.com/strimzi)
-
-## Test Producer
-
-```
-kubectl -n kafka run kafka-producer -ti --image=strimzi/kafka:latest-kafka-2.4.0 --rm=true --restart=Never -- bin/kafka-console-producer.sh --broker-list prompt-processing-kafka-bootstrap:9092 --topic next-visit-test-topic
-```
-
-## Test Consumer
-
-List Topics
-
-```
-kubectl -n kafka run kafka-topics -ti --image=strimzi/kafka:latest-kafka-2.4.0 --rm=true --restart=Never -- bin/kafka-topics.sh --list --bootstrap-server=prompt-processing-kafka-bootstrap:9092
-```
-
-## Confluent Python Library
-
-[GitHub Repo](https://github.com/confluentinc/confluent-kafka-python)
-
-
-
+[kubectl download](https://kubernetes.io/docs/tasks/tools/)
+[Kustomize download](https://kubectl.docs.kubernetes.io/installation/kustomize/)
