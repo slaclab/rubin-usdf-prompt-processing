@@ -10,18 +10,20 @@ Confluent Python SASL Example [here](https://github.com/confluentinc/confluent-k
 
 Example authentication kubernetes [here](https://github.com/strimzi/client-examples/blob/main/java/kafka/deployment-ssl-auth.yaml)
 
-## Testing
-
-Create a message
+## Test Producer
 
 ```
-kubectl -n kafka run kafka-producer -ti --image=strimzi/kafka:latest-kafka-2.4.0 --rm=true --restart=Never -- bin/kafka-console-producer.sh --broker-list my-cluster-kafka-bootstrap:9092 --topic my-topic`
+kubectl -n kafka run kafka-producer -ti --image=strimzi/kafka:latest-kafka-2.4.0 --rm=true --restart=Never -- bin/kafka-console-producer.sh --broker-list prompt-processing-kafka-bootstrap:9092 --topic next-visit-test-topic
 ```
 
-Read a message
+## Test Consumer
+
+List Topics
+
 ```
-kubectl -n kafka run kafka-consumer -ti --image=strimzi/kafka:latest-kafka-2.4.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic --from-beginning
+kubectl -n kafka run kafka-topics -ti --image=strimzi/kafka:latest-kafka-2.4.0 --rm=true --restart=Never -- bin/kafka-topics.sh --list --bootstrap-server=prompt-processing-kafka-bootstrap:9092
 ```
+
 
 ### Kafkacat
 Kafkacat can be installed with instructions [here](https://github.com/edenhill/kcat)
