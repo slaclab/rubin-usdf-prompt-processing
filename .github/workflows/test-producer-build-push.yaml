@@ -7,7 +7,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish Docker image
+name: Publish Kafka Producer Test Docker image
 
 on:
   push:
@@ -22,7 +22,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: "slaclab/kakfa-producer-test"
+  IMAGE_NAME: "slaclab/prompt-proto-kakfa-producer-test"
 
 jobs:
   push_to_registry:
