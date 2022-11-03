@@ -27,11 +27,6 @@ env:
 jobs:
   push_to_registry:
 
-    defaults:
-      run:
-        shell: bash
-        working-directory: test-producer
-
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
@@ -56,5 +51,6 @@ jobs:
         with:
           context: .
           push: true
+          file: test-producer/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
