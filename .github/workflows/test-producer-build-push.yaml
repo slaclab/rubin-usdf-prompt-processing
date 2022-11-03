@@ -29,6 +29,7 @@ jobs:
 
     defaults:
       run:
+        shell: bash
         working-directory: ./test-producer
 
     name: Push Docker image to Docker Hub
