@@ -27,6 +27,6 @@ spec:
           - name: CONSUMER_GROUP
             value: next-visit-notify-group
           - name: BUCKET_NOTIFY_TOPIC
-            value: next-visit-test-topic
+            value: next-visit-topic
           - name: KNATIVE_SERVING_URL
             value: http://prompt-proto-service.prompt-proto-service.svc.cluster.local/next-visit
