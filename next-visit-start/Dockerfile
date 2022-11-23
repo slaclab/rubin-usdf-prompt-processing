@@ -2,6 +2,8 @@ FROM python:3.10-slim-buster
 
 ENV PYTHONUNBUFFERED True
 
+#ENV PYTHONASYINCIODEBUG 1
+
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
