@@ -1,72 +1,78 @@
+import json
 import logging
 import os
 import sys
-import requests
-from requests import HTTPError
-
-from confluent_kafka import Consumer
+import asyncio
+import httpx
+from aiokafka import AIOKafkaConsumer
 from cloudevents.conversion import to_binary, to_structured
 from cloudevents.http import CloudEvent
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+def deserializer(serialized):
+    return json.loads(serialized)
 
-# kafka
-kafka_cluster = os.environ["KAFKA_CLUSTER"]
-group_id = os.environ["CONSUMER_GROUP"]
-topic = os.environ["BUCKET_NOTIFY_TOPIC"]
 
-# kafka auth
-# sasl_username = os.environ["SASL_USERNAME"]
-# sasl_password = os.environ["SASL_PASSWORD"]
-# sasl_mechanism = os.environ["SASL_MECHANISM"]
-# security_protoocol = os.environ["SECURITY_PROTOCOL"]
+async def main():
 
-# knative serving
-knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
+    # Get environment varialbles
+    kafka_cluster = os.environ["KAFKA_CLUSTER"]
+    group_id = os.environ["CONSUMER_GROUP"]
+    topic = os.environ["BUCKET_NOTIFY_TOPIC"]
+    knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
 
-c = Consumer(
-    {
-        "bootstrap.servers": kafka_cluster,
-        "group.id": group_id,
-        "auto.offset.reset": "earliest",
-        # "sasl.username": sasl_username,
-        # "sasl.password": sasl_password,
-        # "security.protocol": security_protoocol,
-        # "sasl.mechanism": sasl_mechanism,
-    }
-)
+    # Logging config
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
 
-c.subscribe([topic])
+    # kafka consumer setup
+    consumer = AIOKafkaConsumer(
+        topic,
+        bootstrap_servers=kafka_cluster,
+        group_id=group_id,
+        value_deserializer=deserializer,
+    )
 
-try:
-    while True:
-        msg = c.poll(1.0)
+    await consumer.start()
 
-        if msg is None:
-            # logging.info("Msg is none")
-            continue
-        if msg.error():
-            logging.info("Consumer error: {}".format(msg.error()))
-            continue
+    tasks = set()
 
-        if msg:
-            logging.info("Received message: {}".format(msg.value().decode("utf-8")))
+    async with httpx.AsyncClient() as client:
+        try:
+            while True:  # run continously
+                async for msg in consumer:
+                    logging.debug(
+                        f"Message value is {msg.value} at time ${msg.timestamp}"
+                    )
 
-            try:
-                attributes = {
-                    "type": "com.example.kafka",
-                    "source": topic,
-                }
-                data = msg.value().decode("utf-8")
-                event = CloudEvent(attributes, data)
-                headers, body = to_structured(event)
-                response = requests.post(
-                    knative_serving_url, headers=headers, data=body
-                )
-                logging.info(response.status_code)
-            except HTTPError as ex:
-                logging.info("Exception ", ex)
+                    try:
+                        attributes = {
+                            "type": "com.example.kafka",
+                            "source": topic,
+                        }
 
-finally:
-    c.close()
+                        data = msg.value
+                        data_json = json.dumps(data)
+                        event = CloudEvent(attributes, data_json)
+                        headers, body = to_structured(event)
+
+                        task = asyncio.create_task(
+                            client.post(
+                                knative_serving_url,
+                                headers=headers,
+                                data=body,
+                                timeout=None,
+                            )
+                        )
+
+                        tasks.add(task)
+                        task.add_done_callback(tasks.discard)
+
+                    except ValueError as e:
+                        logging.info("Error ", e)
+
+        finally:
+            await consumer.stop()
+
+
+asyncio.run(main())

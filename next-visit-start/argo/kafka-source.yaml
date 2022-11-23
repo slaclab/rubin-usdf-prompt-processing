@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: kafka
+  namespace: argo-events
+spec:
+  example:
+    kafka:
+      url: prompt-processing-kafka-bootstrap.kafka:9092
+      topic: next-visit-test-topic
+      jsonBody: true
+      consumerGroup:
+        groupName: test-group
+        oldest: false
+        rebalanceStrategy: range

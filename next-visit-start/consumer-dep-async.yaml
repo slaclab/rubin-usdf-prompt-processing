@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nextvisit-start
-  namespace: prompt-proto-service
+  name: nextvisit-start-async
+  namespace: knative-eventing
   labels:
-    app: nextvisit-start
+    app: nextvisit-start-async
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nextvisit-start
+      app: nextvisit-start-async
   template:
     metadata:
       labels:
-        app: nextvisit-start
+        app: nextvisit-start-async
     spec:
       imagePullSecrets:
       - name: regcred
       containers:
       - name: nextvisit-start
-        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-start:async
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-start:945e3a1-dirty
         command: [ "python", "main.py"]
         env:
           - name: KAFKA_CLUSTER
@@ -27,6 +27,6 @@ spec:
           - name: CONSUMER_GROUP
             value: next-visit-notify-group
           - name: BUCKET_NOTIFY_TOPIC
-            value: next-visit-topic
+            value: next-visit-test-topic
           - name: KNATIVE_SERVING_URL
-            value: http://prompt-proto-service.prompt-proto-service.svc.cluster.local/next-visit
+            value: http://next-visit-test.knative-eventing.svc.cluster.local/next-visit

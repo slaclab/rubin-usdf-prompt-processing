@@ -10,4 +10,4 @@ build:
 deploy:
   kubectl:
     manifests:
-    - consumer-dep.yaml
+    - consumer-dep-async.yaml
