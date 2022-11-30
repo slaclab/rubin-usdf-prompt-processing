@@ -29,4 +29,4 @@ spec:
           - name: BUCKET_NOTIFY_TOPIC
             value: next-visit-test-topic
           - name: KNATIVE_SERVING_URL
-            value: http://next-visit-test.knative-eventing.svc.cluster.local/next-visit
+            value: http://next-visit-test.knative-serving.svc.cluster.local/next-visit

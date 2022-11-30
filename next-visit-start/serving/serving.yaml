@@ -2,7 +2,10 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: next-visit-test
-  namespace: knative-eventing
+  namespace: knative-serving
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
 spec:
   template:
     metadata:
