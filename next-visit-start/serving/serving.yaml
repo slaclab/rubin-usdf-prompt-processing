@@ -11,10 +11,11 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
-        autoscaling.knative.dev/target: "1"
         autoscaling.knative.dev/min-scale: "1"
         autoscaling.knative.dev/max-scale: "100"
+        autoscaling.knative.dev/target-utilization-percentage: "80"
     spec:
+      containerConcurrency: 1
       imagePullSecrets:
       - name: regcred
       containers:
