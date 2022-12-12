@@ -1,3 +1,4 @@
+import json
 import logging
 import sys
 import time
@@ -16,9 +17,12 @@ def next_visit_handler():
     logging.info(f"Found {event['id']} from {event['source']} with type")
     logging.info(f"{event['type']} and specversion event{['specversion']}")
     logging.info(f"Event data {event.data}")
+    data = json.loads(event.data)
+    # print(data)
+    print(time.ctime())
 
-    time.sleep(2)  # sleep to allow for concurrency testing
-
+    time.sleep(120)  # sleep to allow for concurrency testing
+    print("done at ", time.ctime())
     return "", 204
 
 
