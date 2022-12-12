@@ -7,4 +7,4 @@ namespace: knative-serving
 resources:
 - producer-job.yaml
 
-nameSuffix: "20221130145148"
+nameSuffix: "20221212113615"

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextvisit-start-async
-  namespace: knative-eventing
+  namespace: knative-serving
   labels:
     app: nextvisit-start-async
 spec:

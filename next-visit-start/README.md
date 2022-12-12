@@ -1,5 +1,4 @@
-https://stackoverflow.com/questions/9110593/asynchronous-requests-with-python-requests
+# Install notes
 
-https://www.twilio.com/blog/asynchronous-http-requests-in-python-with-aiohttp
 
-https://stackoverflow.com/questions/46497578/while-loop-blocks-asyncio-tasks
+kubectl logs -l serving.knative.dev/service=next-visit-test -c user-container -f --max-log-requests=100

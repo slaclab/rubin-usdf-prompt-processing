@@ -18,11 +18,11 @@ def next_visit_handler():
     logging.info(f"{event['type']} and specversion event{['specversion']}")
     logging.info(f"Event data {event.data}")
     data = json.loads(event.data)
-    print(data)
+    # print(data)
     print(time.ctime())
 
     time.sleep(120)  # sleep to allow for concurrency testing
-
+    print("done at ", time.ctime())
     return "", 204
 
 
