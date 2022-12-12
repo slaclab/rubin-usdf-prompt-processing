@@ -2,16 +2,20 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: next-visit-test
-  namespace: knative-eventing
+  namespace: knative-serving
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
 spec:
   template:
     metadata:
       annotations:
         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
-        autoscaling.knative.dev/target: "1"
         autoscaling.knative.dev/min-scale: "1"
         autoscaling.knative.dev/max-scale: "100"
+        autoscaling.knative.dev/target-utilization-percentage: "80"
     spec:
+      containerConcurrency: 1
       imagePullSecrets:
       - name: regcred
       containers:

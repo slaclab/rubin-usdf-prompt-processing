@@ -1,0 +1,26 @@
+FROM python:3.11.0-bullseye
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends gcc git libssl-dev g++ make
+
+
+RUN cd /tmp && \
+    git config --global http.sslverify false && \
+    git clone https://github.com/edenhill/librdkafka.git && \
+    cd librdkafka && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install
+
+
+ENV PYTHONUNBUFFERED True
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD [ "python", "main.py"]

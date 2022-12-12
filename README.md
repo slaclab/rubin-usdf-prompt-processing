@@ -14,3 +14,5 @@ If performing local deployments below are links to kubectl and kustomize.
 
 [kubectl download](https://kubernetes.io/docs/tasks/tools/)
 [Kustomize download](https://kubectl.docs.kubernetes.io/installation/kustomize/)
+
+kubectl port-forward svc/prometheus-grafana 8080:80 -n prometheus

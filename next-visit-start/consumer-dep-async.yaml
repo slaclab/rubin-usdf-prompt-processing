@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nextvisit-start
-  namespace: prompt-proto-service
+  name: nextvisit-start-async
+  namespace: knative-serving
   labels:
-    app: nextvisit-start
+    app: nextvisit-start-async
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nextvisit-start
+      app: nextvisit-start-async
   template:
     metadata:
       labels:
-        app: nextvisit-start
+        app: nextvisit-start-async
     spec:
       imagePullSecrets:
       - name: regcred
@@ -29,4 +29,4 @@ spec:
           - name: BUCKET_NOTIFY_TOPIC
             value: next-visit-test-topic
           - name: KNATIVE_SERVING_URL
-            value: http://prompt-proto-service.prompt-proto-service.svc.cluster.local/next-visit
+            value: http://next-visit-test.knative-serving.svc.cluster.local/next-visit
