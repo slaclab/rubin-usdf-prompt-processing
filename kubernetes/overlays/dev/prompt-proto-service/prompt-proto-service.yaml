@@ -69,7 +69,9 @@ spec:
           successThreshold: 1
           tcpSocket:
             port: 0
-        resources: {}
+        resources:
+          requests:
+            cpu: "1"
       volumes:
       - name: s3-credentials-file
         secret:

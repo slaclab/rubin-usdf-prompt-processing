@@ -20,3 +20,7 @@ spec:
       - name: regcred
       containers:
         - image: us-central1-docker.pkg.dev/prompt-proto/prompt/next-visit-test:v1.3
+          resources:
+            requests:
+              cpu: "1"
+
