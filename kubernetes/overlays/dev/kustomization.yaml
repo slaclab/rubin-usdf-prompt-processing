@@ -1,13 +1,13 @@
 
 bases:
 - knative-operator/
-- cnpg-operator/
+# - cnpg-operator/
 - database/
 
 resources:
 - knative-serving.yaml
-- knative-eventing.yaml
-- kafka-knative.yaml
+# - knative-eventing.yaml
+# - kafka-knative.yaml
 
 # can't include in kustomize as its not local
 #patches:

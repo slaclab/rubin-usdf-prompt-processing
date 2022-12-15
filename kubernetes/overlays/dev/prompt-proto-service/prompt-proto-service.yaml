@@ -20,6 +20,9 @@ spec:
       - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
         imagePullPolicy: Always
         name: user-container
+        resources:
+          requests:
+            cpu: "1"
         env:
         - name: RUBIN_INSTRUMENT
           value: HSC
@@ -69,9 +72,6 @@ spec:
           successThreshold: 1
           tcpSocket:
             port: 0
-        resources:
-          requests:
-            cpu: "1"
       volumes:
       - name: s3-credentials-file
         secret:
