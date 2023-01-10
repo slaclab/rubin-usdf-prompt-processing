@@ -2,8 +2,15 @@
 
 The knative serving instance is deployed in the prompt-proto-service namespace.
 
-Deployments can be done via the makefile.  After updating a docker image update the image tag in the [prompt-proto-service-.yaml](prompt-proto-service.yaml) file in this directory.  Run `make apply` to deploy.  
+Deployments can be done via the makefile.
+The makefile uses Vault to set up service credentials; using it requires an environment variable, `VAULT_ADDR=https://vault.slac.stanford.edu`.
+
+After updating a docker image update the image tag in the [prompt-proto-service-.yaml](prompt-proto-service.yaml) file in this directory.  Run `make apply` to deploy.
 If you are reusing a tag (e.g., for a branch build) and it refuses to deploy, update the revision field instead.
+
+If running `make apply` gives a warning about Vault credentials, you need to (re)authenticate.
+In a browser, log in to https://vault.slac.stanford.edu/ and choose "Copy token" from the upper right menu.
+Then, from the command line, run `vault login` and paste the copied token.
 
 To obtain the service status `kubectl get serving -n prompt-proto-service`
 
