@@ -29,13 +29,20 @@ def main():
     next_visit = {
         "instrument": "NotACam",
         "detector": 42,
-        "group": "visit-12882-20221027",
-        "snaps": 2,
-        "filter": "k1234",
-        "ra": 0.0,
-        "dec": 0.0,
-        "rot": 0.0,
-        "kind": "INVALID",
+        "salIndex": 1,
+        "scriptSalIndex": 101,
+        "groupId": "2023-01-23T23:33:14.762",
+        "nimages": 2,
+        "filters": "k1234",
+        "coordinateSystem": 2,  # ICRS
+        "position0": 0.0,
+        "position1": 0.0,
+        "rotationSystem": 2,    # Sky
+        "cameraAngle": 0.0,
+        "survey": "INVALID",
+        "dome": 2,              # Open
+        "duration": 35.0,
+        "totalCheckpoints": 3,
     }
 
     for i in range(int(msg_batch_size)):
