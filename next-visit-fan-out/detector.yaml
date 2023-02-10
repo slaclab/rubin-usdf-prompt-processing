@@ -1,0 +1,33 @@
+LATISS:
+  detectors:
+    0: True
+    1: False
+    2: True
+    3: False
+    4: True
+    5: True
+    6: True
+    7: True
+    8: True
+LSSTComCam:
+  detectors:
+    0: True
+    1: False
+    2: True
+    3: False
+    4: True
+    5: True
+    6: True
+    7: True
+    8: True
+LSSTCam:
+  detectors:
+    0: True
+    1: False
+    2: True
+    3: False
+    4: False
+    5: False
+    6: True
+    7: True
+    8: True
