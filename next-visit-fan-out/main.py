@@ -5,22 +5,36 @@ import asyncio
 import httpx
 import yaml
 from aiokafka import AIOKafkaConsumer
-from cloudevents.conversion import to_binary, to_structured
+from cloudevents.conversion import to_structured
 from cloudevents.http import CloudEvent
 from pathlib import Path
 
-
-def add_detectors_to_messages(message, active_detectors):
-    message_list = []
-    for active_detector in active_detectors:
-        temp_message = message.copy()
-        temp_message["detector"] = active_detector
-        message_list.append(temp_message)
-    return message_list
+import dataclasses
+from dataclasses import dataclass
+from dataclasses_avroschema import AvroModel
 
 
-def deserializer(serialized):
-    return json.loads(serialized)
+@dataclass
+class NextVisitModel(AvroModel):
+    "Next Visit Message"
+    instrument: str
+    group: str
+    snaps: int
+    filter: str
+    ra: int
+    dec: int
+    rot: int
+    kind: str
+
+    @staticmethod
+    def add_detectors(message, active_detectors):
+        next_visit_message_dict = dataclasses.asdict(message)
+        message_list = []
+        for active_detector in active_detectors:
+            temp_message = next_visit_message_dict.copy()
+            temp_message["detector"] = active_detector
+            message_list.append(temp_message)
+        return message_list
 
 
 def detector_load(conf, instrument):
@@ -34,13 +48,13 @@ def detector_load(conf, instrument):
 
 async def main():
 
-    # Get environment varialbles
+    # Get environment variables
     # kafka_cluster = os.environ["KAFKA_CLUSTER"]
     kafka_cluster = "34.123.148.90:9094"
     # group_id = os.environ["CONSUMER_GROUP"]
-    group_id = "test-group-2"
+    group_id = "test-group-1"
     # topic = os.environ["BUCKET_NOTIFY_TOPIC"]
-    topic = "next_visit_topic_2"
+    topic = "next_visit_avro_topic"
     # knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
     knative_serving_url = (
         "http://next-visit-test.knative-serving.svc.cluster.local/next-visit"
@@ -62,7 +76,7 @@ async def main():
         topic,
         bootstrap_servers=kafka_cluster,
         group_id=group_id,
-        value_deserializer=deserializer,
+        # value_deserializer=deserializer,
     )
 
     await consumer.start()
@@ -76,24 +90,30 @@ async def main():
                     logging.info(
                         f"Message value is {msg.value} at time ${msg.timestamp}"
                     )
-                    logging.info(msg.value)
+                    logging.info(
+                        f"avro message value before deserialize is {msg.value}"
+                    )
+                    next_visit_message = NextVisitModel.deserialize(msg.value)
+                    # next_visit_message_dict = dataclasses.asdict(next_visit_message)
+                    logging.info(f"message deserialized {next_visit_message}")
 
-                    # hashmap name of instrument to detector variable
-                    match msg.value["instrument"]:
+                    match next_visit_message.instrument:
                         case "LATISS":
-                            fan_out_message_list = add_detectors_to_messages(
-                                msg.value, latiss_active_detectors
+                            fan_out_message_list = next_visit_message.add_detectors(
+                                next_visit_message, latiss_active_detectors
                             )
                         case "LSSTComCam":
-                            fan_out_message_list = add_detectors_to_messages(
-                                msg.value, lsst_com_cam_active_detectors
+                            fan_out_message_list = next_visit_message.add_detectors(
+                                next_visit_message, lsst_com_cam_active_detectors
                             )
-                        case "LSSTCan":
-                            fan_out_message_list = add_detectors_to_messages(
-                                msg.value, lsst_cam_active_detectors
+                        case "LSSTCam":
+                            fan_out_message_list = next_visit_message.add_detectors(
+                                next_visit_message, lsst_cam_active_detectors
                             )
                         case _:
-                            logging.info("no matching instrument")
+                            raise Exception(
+                                f"no matching case for {next_visit_message.instrument}"
+                            )
 
                     try:
                         attributes = {

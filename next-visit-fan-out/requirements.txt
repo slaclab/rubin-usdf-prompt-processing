@@ -4,3 +4,4 @@ asyncio
 aiohttp
 httpx
 aiokafka
+dataclasses-avroschema
