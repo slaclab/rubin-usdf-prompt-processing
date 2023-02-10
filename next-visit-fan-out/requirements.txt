@@ -1,0 +1,6 @@
+requests
+cloudevents
+asyncio
+aiohttp
+httpx
+aiokafka
