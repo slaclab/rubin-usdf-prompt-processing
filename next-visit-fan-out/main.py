@@ -8,6 +8,7 @@ from aiokafka import AIOKafkaConsumer
 from cloudevents.conversion import to_structured
 from cloudevents.http import CloudEvent
 from pathlib import Path
+import typing
 
 import dataclasses
 from dataclasses import dataclass
@@ -17,14 +18,19 @@ from dataclasses_avroschema import AvroModel
 @dataclass
 class NextVisitModel(AvroModel):
     "Next Visit Message"
-    instrument: str
-    group: str
-    snaps: int
-    filter: str
-    ra: int
-    dec: int
-    rot: int
-    kind: str
+    salIndex: int
+    scriptSalIndex: int
+    groupId: str
+    nimages: int
+    filters: str
+    coordinateSystem: int
+    position: typing.List[int]
+    rotationSystem: int
+    cameraAngle: int
+    survey: str
+    dome: int
+    duration: int
+    totalCheckpoints: int
 
     @staticmethod
     def add_detectors(message, active_detectors):
@@ -97,16 +103,16 @@ async def main():
                     # next_visit_message_dict = dataclasses.asdict(next_visit_message)
                     logging.info(f"message deserialized {next_visit_message}")
 
-                    match next_visit_message.instrument:
-                        case "LATISS":
+                    match next_visit_message.salIndex:
+                        case 1:  # LATISS
                             fan_out_message_list = next_visit_message.add_detectors(
                                 next_visit_message, latiss_active_detectors
                             )
-                        case "LSSTComCam":
-                            fan_out_message_list = next_visit_message.add_detectors(
-                                next_visit_message, lsst_com_cam_active_detectors
-                            )
-                        case "LSSTCam":
+                        # case "LSSTComCam":
+                        #    fan_out_message_list = next_visit_message.add_detectors(
+                        #        next_visit_message, lsst_com_cam_active_detectors
+                        #    )
+                        case 2:  # LSSTCam
                             fan_out_message_list = next_visit_message.add_detectors(
                                 next_visit_message, lsst_cam_active_detectors
                             )
