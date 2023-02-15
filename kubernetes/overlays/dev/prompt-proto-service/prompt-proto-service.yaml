@@ -89,4 +89,4 @@ spec:
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
-      timeoutSeconds: 300
+      timeoutSeconds: 600
