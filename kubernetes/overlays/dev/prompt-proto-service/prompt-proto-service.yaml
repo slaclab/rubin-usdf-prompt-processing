@@ -12,7 +12,7 @@ spec:
         autoscaling.knative.dev/max-scale: "100"
         autoscaling.knative.dev/target-utilization-percentage: "80"
         # Update this field if `make apply` by itself doesn't make a new revision.
-        revision: "31"
+        revision: "32"
       creationTimestamp: null
     spec:
       containerConcurrency: 1
@@ -61,19 +61,31 @@ spec:
           value: https://s3dfrgw.slac.stanford.edu
         - name: AWS_SHARED_CREDENTIALS_FILE
           value: /app/s3/credentials
+        - name: LOCAL_REPOS
+          value: "/tmp-butler"
         volumeMounts:
           - mountPath: /app/s3/credentials
             name: s3-credentials-file
             subPath: credentials
+          - mountPath: /tmp-butler
+            name: ephemeral
+            readOnly: false
         readinessProbe:
           successThreshold: 1
           tcpSocket:
             port: 0
-        resources: {}
+        resources:
+          requests:
+            ephemeral-storage: "8Gi"
+          limits:
+            ephemeral-storage: "10Gi"
       volumes:
       - name: s3-credentials-file
         secret:
           secretName: s3-credentials-file
+      - name: ephemeral
+        emptyDir:
+          sizeLimit: "8Gi"
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
