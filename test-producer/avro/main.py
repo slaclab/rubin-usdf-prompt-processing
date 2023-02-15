@@ -4,6 +4,7 @@ import os
 import sys
 import socket
 import asyncio
+import typing
 
 import enum
 import random
@@ -33,14 +34,19 @@ class Instrument(enum.Enum):
 @dataclass
 class NextVisitModel(AvroModel):
     "Next Visit Message"
-    instrument: str
-    group: str
-    snaps: int
-    filter: str
-    ra: int
-    dec: int
-    rot: int
-    kind: str
+    salIndex: int
+    scriptSalIndex: int
+    groupId: str
+    nimages: int
+    filters: str
+    coordinateSystem: int
+    position: typing.List[int]
+    rotationSystem: int
+    cameraAngle: int
+    survey: str
+    dome: int
+    duration: int
+    totalCheckpoints: int
 
 
 def acked(err, msg):
@@ -59,17 +65,24 @@ async def send(loop, total_events=3):
         # Produce message
         print(f"Sending event number {event_number}")
 
+        position_list = [0.0, 0.0]
+
         next_visit = NextVisitModel(
-            instrument=random.choice(["LATISS", "LSSTComCam", "LSSTCam"]),
-            group=random.choice(
+            salIndex=random.randint(1, 2),
+            scriptSalIndex=random.randint(1, 2),
+            groupId=random.choice(
                 ["visit-12882-20221027", "visit-12882-20221028", "visit-12882-20221029"]
             ),
-            snaps=random.randint(1, 3),
-            filter=random.choice(["k1234", "k1235", "k1236"]),
-            ra=0.0,
-            dec=0.0,
-            rot=0.0,
-            kind=random.choice(["INVALID"]),
+            nimages=random.randint(1, 3),
+            filters=random.choice(["k1234", "k1235", "k1236"]),
+            coordinateSystem=random.randint(1, 3),
+            position=position_list,
+            rotationSystem=random.randint(1, 3),
+            cameraAngle=random.randint(1, 3),
+            survey=random.choice(["k1234", "k1235", "k1236"]),
+            dome=random.randint(1, 3),
+            duration=random.randint(1, 3),
+            totalCheckpoints=random.randint(1, 3),
         )
 
         # create the message
