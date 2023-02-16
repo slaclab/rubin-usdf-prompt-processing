@@ -78,14 +78,14 @@ spec:
           requests:
             ephemeral-storage: "8Gi"
           limits:
-            ephemeral-storage: "10Gi"
+            ephemeral-storage: "14Gi"
       volumes:
       - name: s3-credentials-file
         secret:
           secretName: s3-credentials-file
       - name: ephemeral
         emptyDir:
-          sizeLimit: "8Gi"
+          sizeLimit: "14Gi"
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
