@@ -1,43 +1,52 @@
 import json
 import logging
+import os
 import sys
 import asyncio
 import httpx
 import yaml
+import typing
+import dataclasses
 from aiokafka import AIOKafkaConsumer
 from cloudevents.conversion import to_structured
 from cloudevents.http import CloudEvent
 from pathlib import Path
-import typing
-
-import dataclasses
 from dataclasses import dataclass
-from dataclasses_avroschema import AvroModel
+from kafkit.registry.httpx import RegistryApi
+from kafkit.registry import Deserializer
 
 
 @dataclass
-class NextVisitModel(AvroModel):
+class NextVisitModel:
     "Next Visit Message"
+    # private_efdStamp: float
+    # private_kafkaStamp: float
     salIndex: int
+    # private_revCode: str
+    # private_sndStamp: float
+    # private_rcvStamp: float
+    # private_seqNum: int
+    # private_identity: str
+    # private_origin: int
     scriptSalIndex: int
     groupId: str
-    nimages: int
-    filters: str
     coordinateSystem: int
     position: typing.List[int]
     rotationSystem: int
-    cameraAngle: int
-    survey: str
+    cameraAngle: float
+    filters: str
     dome: int
-    duration: int
+    duration: float
+    nimages: int
+    survey: str
     totalCheckpoints: int
 
-    @staticmethod
-    def add_detectors(message, active_detectors):
+    def add_detectors(self, instrument, message, active_detectors):
         next_visit_message_dict = dataclasses.asdict(message)
         message_list = []
         for active_detector in active_detectors:
             temp_message = next_visit_message_dict.copy()
+            temp_message["instrument"] = instrument
             temp_message["detector"] = active_detector
             message_list.append(temp_message)
         return message_list
@@ -55,16 +64,17 @@ def detector_load(conf, instrument):
 async def main():
 
     # Get environment variables
-    # kafka_cluster = os.environ["KAFKA_CLUSTER"]
-    kafka_cluster = "34.123.148.90:9094"
-    # group_id = os.environ["CONSUMER_GROUP"]
-    group_id = "test-group-1"
-    # topic = os.environ["BUCKET_NOTIFY_TOPIC"]
-    topic = "next_visit_avro_topic"
-    # knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
-    knative_serving_url = (
-        "http://next-visit-test.knative-serving.svc.cluster.local/next-visit"
-    )
+    kafka_cluster = os.environ["KAFKA_CLUSTER"]
+    group_id = os.environ["CONSUMER_GROUP"]
+    topic = os.environ["BUCKET_NOTIFY_TOPIC"]
+    kafka_schema_registr_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
+    knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
+
+    # kafka auth
+    sasl_username = os.environ["SASL_USERNAME"]
+    sasl_password = os.environ["SASL_PASSWORD"]
+    sasl_mechanism = os.environ["SASL_MECHANISM"]
+    security_protocol = os.environ["SECURITY_PROTOCOL"]
 
     # Logging config
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -82,7 +92,10 @@ async def main():
         topic,
         bootstrap_servers=kafka_cluster,
         group_id=group_id,
-        # value_deserializer=deserializer,
+        security_protocol=security_protocol,
+        sasl_mechanism=sasl_mechanism,
+        sasl_plain_username=sasl_username,
+        sasl_plain_password=sasl_password,
     )
 
     await consumer.start()
@@ -91,6 +104,10 @@ async def main():
 
     async with httpx.AsyncClient() as client:
         try:
+            # Setup kafka schema registry connection and deserialzer
+            registry_api = RegistryApi(http_client=client, url=kafka_schema_registr_url)
+            deserializer = Deserializer(registry=registry_api)
+
             while True:  # run continously
                 async for msg in consumer:
                     logging.info(
@@ -99,26 +116,62 @@ async def main():
                     logging.info(
                         f"avro message value before deserialize is {msg.value}"
                     )
-                    next_visit_message = NextVisitModel.deserialize(msg.value)
-                    # next_visit_message_dict = dataclasses.asdict(next_visit_message)
-                    logging.info(f"message deserialized {next_visit_message}")
+                    next_visit_message_initial = await deserializer.deserialize(
+                        data=msg.value
+                    )
 
-                    match next_visit_message.salIndex:
+                    logging.info(f"message deserialized {next_visit_message_initial}")
+
+                    next_visit_message_updated = NextVisitModel(
+                        salIndex=next_visit_message_initial["message"]["salIndex"],
+                        scriptSalIndex=next_visit_message_initial["message"][
+                            "scriptSalIndex"
+                        ],
+                        groupId=next_visit_message_initial["message"]["groupId"],
+                        coordinateSystem=next_visit_message_initial["message"][
+                            "coordinateSystem"
+                        ],
+                        position=next_visit_message_initial["message"]["position"],
+                        rotationSystem=next_visit_message_initial["message"][
+                            "rotationSystem"
+                        ],
+                        cameraAngle=next_visit_message_initial["message"][
+                            "cameraAngle"
+                        ],
+                        filters=next_visit_message_initial["message"]["filters"],
+                        dome=next_visit_message_initial["message"]["dome"],
+                        duration=next_visit_message_initial["message"]["duration"],
+                        nimages=next_visit_message_initial["message"]["nimages"],
+                        survey=next_visit_message_initial["message"]["survey"],
+                        totalCheckpoints=next_visit_message_initial["message"][
+                            "totalCheckpoints"
+                        ],
+                    )
+
+                    match next_visit_message_updated.salIndex:
                         case 1:  # LATISS
-                            fan_out_message_list = next_visit_message.add_detectors(
-                                next_visit_message, latiss_active_detectors
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "LATISS",
+                                    next_visit_message_updated,
+                                    latiss_active_detectors,
+                                )
                             )
                         # case "LSSTComCam":
                         #    fan_out_message_list = next_visit_message.add_detectors(
-                        #        next_visit_message, lsst_com_cam_active_detectors
+                        #        "LSSTComCam", next_visit_message, lsst_com_cam_active_detectors
                         #    )
                         case 2:  # LSSTCam
-                            fan_out_message_list = next_visit_message.add_detectors(
-                                next_visit_message, lsst_cam_active_detectors
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "LSSTCam",
+                                    next_visit_message_updated,
+                                    lsst_cam_active_detectors,
+                                )
                             )
                         case _:
                             raise Exception(
-                                f"no matching case for {next_visit_message.instrument}"
+                                f"no matching case for salIndex {next_visit_message_updated.salIndex} to add instrument value"
                             )
 
                     try:
@@ -131,7 +184,7 @@ async def main():
                             data = fan_out_message
                             data_json = json.dumps(data)
 
-                            print(f"data after dump ${data_json}")
+                            logging.info(f"data after json dump {data_json}")
                             event = CloudEvent(attributes, data_json)
                             headers, body = to_structured(event)
 

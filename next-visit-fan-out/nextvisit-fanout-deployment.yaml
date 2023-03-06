@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanout-test
+  namespace: knative-serving
+  labels:
+    app: fanout-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fanout-test
+  template:
+    metadata:
+      labels:
+        app: fanout-test
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: nextvisit-start
+          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.38
+          env:
+            - name: KAFKA_CLUSTER
+              value: 172.24.5.230:9094
+            - name: CONSUMER_GROUP
+              value: test-group-2
+            - name: BUCKET_NOTIFY_TOPIC
+              value: test.next-visit
+            - name: SASL_MECHANISM
+              value: SCRAM-SHA-512
+            - name: SECURITY_PROTOCOL
+              value: SASL_PLAINTEXT
+            - name: SASL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: kafka-sasl-prompt-prompt-processing
+            - name: SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: kafka-sasl-prompt-prompt-processing
+            - name: KAFKA_SCHEMA_REGISTRY_URL
+              value: http://10.99.65.182:8081
+            - name: KNATIVE_SERVING_URL
+              value: http://next-visit-test.knative-serving.svc.cluster.local/next-visit
+      volumes:
+        - name: kafka-sasl-prompt-prompt-processing
+          secret:
+            secretName: kafka-sasl-prompt-prompt-processing
+          
