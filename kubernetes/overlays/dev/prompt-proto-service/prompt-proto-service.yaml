@@ -23,6 +23,8 @@ spec:
         env:
         - name: RUBIN_INSTRUMENT
           value: HSC
+        - name: SKYMAP
+          value: hsc_rings_v1
         - name: PUBSUB_VERIFICATION_TOKEN
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
