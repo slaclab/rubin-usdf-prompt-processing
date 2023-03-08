@@ -1,33 +1,597 @@
 LATISS:
   detectors:
-    0: True
-    1: False
-    2: True
-    3: False
-    4: True
-    5: True
-    6: True
-    7: True
-    8: True
+    0:
+      value: R00S00
+      enabled: True
 LSSTComCam:
   detectors:
-    0: True
-    1: False
-    2: True
-    3: False
-    4: True
-    5: True
-    6: True
-    7: True
-    8: True
+    0:
+      value: R22_S00
+      enabled: True
+    1:
+      value: R22_S01
+      enabled: True
+    2:
+      value: R22_S02
+      enabled: True
+    3:
+      value: R22_S10
+      enabled: True
+    4:
+      value: R22_S11
+      enabled: True
+    5:
+      value: R22_S12
+      enabled: True
+    6:
+      value: R22_S20
+      enabled: True
+    7:
+      value: R22_S21
+      enabled: True
 LSSTCam:
   detectors:
-    0: True
-    1: False
-    2: True
-    3: False
-    4: False
-    5: False
-    6: True
-    7: True
-    8: True
+    187:
+      value: R43_S21
+      enabled: True
+    186:
+      value: R43_S20
+      enabled: True
+    183:
+      value: R43_S10
+      enabled: True
+    180:
+      value: R43_S00
+      enabled: True
+    178:
+      value: R42_S21
+      enabled: True
+    175:
+      value: R42_S11
+      enabled: True
+    174:
+      value: R42_S10
+      enabled: True
+    173:
+      value: R42_S02
+      enabled: True
+    172:
+      value: R42_S01
+      enabled: True
+    170:
+      value: R41_S22
+      enabled: True
+    185:
+      value: R43_S12
+      enabled: True
+    168:
+      value: R41_S20
+      enabled: True
+    167:
+      value: R41_S12
+      enabled: True
+    158:
+      value: R34_S12
+      enabled: True
+    155:
+      value: R34_S02
+      enabled: True
+    153:
+      value: R34_S00
+      enabled: True
+    152:
+      value: R33_S22
+      enabled: True
+    150:
+      value: R33_S20
+      enabled: True
+    149:
+      value: R33_S12
+      enabled: True
+    145:
+      value: R33_S01
+      enabled: True
+    144:
+      value: R33_S00
+      enabled: True
+    159:
+      value: R34_S20
+      enabled: True
+    141:
+      value: R32_S20
+      enabled: True
+    140:
+      value: R32_S12
+      enabled: True
+    138:
+      value: R32_S10
+      enabled: True
+    133:
+      value: R31_S21
+      enabled: True
+    132:
+      value: R31_S20
+      enabled: True
+    129:
+      value: R31_S10
+      enabled: True
+    128:
+      value: R31_S02
+      enabled: True
+    160:
+      value: R34_S21
+      enabled: True
+    56:
+      value: R13_S02
+      enabled: True
+    53:
+      value: R12_S22
+      enabled: True
+    61:
+      value: R13_S21
+      enabled: True
+    48:
+      value: R12_S10
+      enabled: True
+    28:
+      value: R10_S01
+      enabled: True
+    1:
+      value: R01_S01
+      enabled: True
+    44:
+      value: R11_S22
+      enabled: True
+    29:
+      value: R10_S02
+      enabled: True
+    27:
+      value: R10_S00
+      enabled: True
+    81:
+      value: R21_S00
+      enabled: True
+    85:
+      value: R21_S11
+      enabled: True
+    42:
+      value: R11_S20
+      enabled: True
+    45:
+      value: R12_S00
+      enabled: True
+    148:
+      value: R33_S11
+      enabled: True
+    37:
+      value: R11_S01
+      enabled: True
+    127:
+      value: R31_S01
+      enabled: True
+    5:
+      value: R01_S12
+      enabled: True
+    80:
+      value: R20_S22
+      enabled: True
+    87:
+      value: R21_S20
+      enabled: True
+    35:
+      value: R10_S22
+      enabled: True
+    179:
+      value: R42_S22
+      enabled: True
+    32:
+      value: R10_S12
+      enabled: True
+    184:
+      value: R43_S11
+      enabled: True
+    16:
+      value: R02_S21
+      enabled: True
+    108:
+      value: R24_S00
+      enabled: True
+    57:
+      value: R13_S10
+      enabled: True
+    36:
+      value: R11_S00
+      enabled: True
+    31:
+      value: R10_S11
+      enabled: True
+    30:
+      value: R10_S10
+      enabled: True
+    10:
+      value: R02_S01
+      enabled: True
+    18:
+      value: R03_S00
+      enabled: True
+    43:
+      value: R11_S21
+      enabled: True
+    8:
+      value: R01_S22
+      enabled: True
+    63:
+      value: R14_S00
+      enabled: True
+    161:
+      value: R34_S22
+      enabled: True
+    156:
+      value: R34_S10
+      enabled: True
+    4:
+      value: R01_S11
+      enabled: True
+    135:
+      value: R32_S00
+      enabled: True
+    11:
+      value: R02_S02
+      enabled: True
+    177:
+      value: R42_S20
+      enabled: True
+    62:
+      value: R13_S22
+      enabled: True
+    38:
+      value: R11_S02
+      enabled: True
+    164:
+      value: R41_S02
+      enabled: True
+    106:
+      value: R23_S21
+      enabled: True
+    55:
+      value: R13_S01
+      enabled: True
+    91:
+      value: R22_S01
+      enabled: True
+    101:
+      value: R23_S02
+      enabled: True
+    134:
+      value: R31_S22
+      enabled: True
+    3:
+      value: R01_S10
+      enabled: True
+    118:
+      value: R30_S01
+      enabled: True
+    49:
+      value: R12_S11
+      enabled: True
+    2:
+      value: R01_S02
+      enabled: True
+    103:
+      value: R23_S11
+      enabled: True
+    26:
+      value: R03_S22
+      enabled: True
+    14:
+      value: R02_S12
+      enabled: True
+    154:
+      value: R34_S01
+      enabled: True
+    59:
+      value: R13_S12
+      enabled: True
+    12:
+      value: R02_S10
+      enabled: True
+    121:
+      value: R30_S11
+      enabled: True
+    58:
+      value: R13_S11
+      enabled: True
+    169:
+      value: R41_S21
+      enabled: True
+    146:
+      value: R33_S02
+      enabled: True
+    25:
+      value: R03_S21
+      enabled: True
+    70:
+      value: R14_S21
+      enabled: True
+    165:
+      value: R41_S10
+      enabled: True
+    52:
+      value: R12_S21
+      enabled: True
+    182:
+      value: R43_S02
+      enabled: True
+    137:
+      value: R32_S02
+      enabled: True
+    19:
+      value: R03_S01
+      enabled: True
+    21:
+      value: R03_S10
+      enabled: True
+    15:
+      value: R02_S20
+      enabled: True
+    67:
+      value: R14_S11
+      enabled: True
+    7:
+      value: R01_S21
+      enabled: True
+    20:
+      value: R03_S02
+      enabled: True
+    23:
+      value: R03_S12
+      enabled: True
+    151:
+      value: R33_S21
+      enabled: True
+    50:
+      value: R12_S12
+      enabled: True
+    130:
+      value: R31_S11
+      enabled: True
+    39:
+      value: R11_S10
+      enabled: True
+    24:
+      value: R03_S20
+      enabled: True
+    88:
+      value: R21_S21
+      enabled: True
+    40:
+      value: R11_S11
+      enabled: True
+    181:
+      value: R43_S01
+      enabled: True
+    34:
+      value: R10_S21
+      enabled: True
+    0:
+      value: R01_S00
+      enabled: True
+    139:
+      value: R32_S11
+      enabled: True
+    9:
+      value: R02_S00
+      enabled: True
+    41:
+      value: R11_S12
+      enabled: True
+    79:
+      value: R20_S21
+      enabled: True
+    60:
+      value: R13_S20
+      enabled: True
+    176:
+      value: R42_S12
+      enabled: True
+    22:
+      value: R03_S11
+      enabled: True
+    64:
+      value: R14_S01
+      enabled: True
+    94:
+      value: R22_S11
+      enabled: True
+    100:
+      value: R23_S01
+      enabled: True
+    142:
+      value: R32_S21
+      enabled: True
+    47:
+      value: R12_S02
+      enabled: True
+    65:
+      value: R14_S02
+      enabled: True
+    66:
+      value: R14_S10
+      enabled: True
+    51:
+      value: R12_S20
+      enabled: True
+    68:
+      value: R14_S12
+      enabled: True
+    166:
+      value: R41_S11
+      enabled: True
+    112:
+      value: R24_S11
+      enabled: True
+    69:
+      value: R14_S20
+      enabled: True
+    163:
+      value: R41_S01
+      enabled: True
+    71:
+      value: R14_S22
+      enabled: True
+    73:
+      value: R20_S01
+      enabled: True
+    33:
+      value: R10_S20
+      enabled: True
+    92:
+      value: R22_S02
+      enabled: True
+    74:
+      value: R20_S02
+      enabled: True
+    136:
+      value: R32_S01
+      enabled: True
+    75:
+      value: R20_S10
+      enabled: True
+    122:
+      value: R30_S12
+      enabled: True
+    76:
+      value: R20_S11
+      enabled: True
+    157:
+      value: R34_S11
+      enabled: True
+    113:
+      value: R24_S12
+      enabled: True
+    77:
+      value: R20_S12
+      enabled: True
+    6:
+      value: R01_S20
+      enabled: True
+    78:
+      value: R20_S20
+      enabled: True
+    82:
+      value: R21_S01
+      enabled: True
+    13:
+      value: R02_S11
+      enabled: True
+    95:
+      value: R22_S12
+      enabled: True
+    126:
+      value: R31_S00
+      enabled: True
+    83:
+      value: R21_S02
+      enabled: True
+    84:
+      value: R21_S10
+      enabled: True
+    54:
+      value: R13_S00
+      enabled: True
+    46:
+      value: R12_S01
+      enabled: True
+    86:
+      value: R21_S12
+      enabled: True
+    131:
+      value: R31_S12
+      enabled: True
+    17:
+      value: R02_S22
+      enabled: True
+    89:
+      value: R21_S22
+      enabled: True
+    90:
+      value: R22_S00
+      enabled: True
+    93:
+      value: R22_S10
+      enabled: True
+    117:
+      value: R30_S00
+      enabled: True
+    147:
+      value: R33_S10
+      enabled: True
+    96:
+      value: R22_S20
+      enabled: True
+    97:
+      value: R22_S21
+      enabled: True
+    115:
+      value: R24_S21
+      enabled: True
+    98:
+      value: R22_S22
+      enabled: True
+    99:
+      value: R23_S00
+      enabled: True
+    162:
+      value: R41_S00
+      enabled: True
+    102:
+      value: R23_S10
+      enabled: True
+    171:
+      value: R42_S00
+      enabled: True
+    104:
+      value: R23_S12
+      enabled: True
+    143:
+      value: R32_S22
+      enabled: True
+    72:
+      value: R20_S00
+      enabled: True
+    105:
+      value: R23_S20
+      enabled: True
+    124:
+      value: R30_S21
+      enabled: True
+    109:
+      value: R24_S01
+      enabled: True
+    107:
+      value: R23_S22
+      enabled: True
+    110:
+      value: R24_S02
+      enabled: True
+    111:
+      value: R24_S10
+      enabled: True
+    114:
+      value: R24_S20
+      enabled: True
+    116:
+      value: R24_S22
+      enabled: True
+    119:
+      value: R30_S02
+      enabled: True
+    123:
+      value: R30_S20
+      enabled: True
+    120:
+      value: R30_S10
+      enabled: True
+    125:
+      value: R30_S22
+      enabled: True

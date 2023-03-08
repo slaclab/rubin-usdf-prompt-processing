@@ -55,19 +55,21 @@ class NextVisitModel:
 def detector_load(conf, instrument):
     detectors = conf[instrument]["detectors"]
     active_detectors = []
-    for key, value in detectors.items():
-        if value in [True]:
-            active_detectors.append(key)
+    for k, v in detectors.items():
+        if v["enabled"]:
+            active_detectors.append(v["value"])
+    print(active_detectors)
     return active_detectors
 
 
 async def main():
 
     # Get environment variables
+    detector_config_file = os.environ["DETECTOR_CONFIG_FILE"]
     kafka_cluster = os.environ["KAFKA_CLUSTER"]
     group_id = os.environ["CONSUMER_GROUP"]
     topic = os.environ["BUCKET_NOTIFY_TOPIC"]
-    kafka_schema_registr_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
+    kafka_schema_registry_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
     knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
 
     # kafka auth
@@ -80,7 +82,7 @@ async def main():
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
 
-    conf = yaml.safe_load(Path("detector.yaml").read_text())
+    conf = yaml.safe_load(Path(detector_config_file).read_text())
 
     # list based on keys in config.  Data class
     latiss_active_detectors = detector_load(conf, "LATISS")
@@ -103,9 +105,12 @@ async def main():
     tasks = set()
 
     async with httpx.AsyncClient() as client:
+
         try:
             # Setup kafka schema registry connection and deserialzer
-            registry_api = RegistryApi(http_client=client, url=kafka_schema_registr_url)
+            registry_api = RegistryApi(
+                http_client=client, url=kafka_schema_registry_url
+            )
             deserializer = Deserializer(registry=registry_api)
 
             while True:  # run continously
