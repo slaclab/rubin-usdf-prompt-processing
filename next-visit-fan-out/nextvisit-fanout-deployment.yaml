@@ -21,6 +21,8 @@ spec:
         - name: nextvisit-start
           image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.38
           env:
+            - name: DETECTOR_CONFIG_FILE
+              value: detector.yaml
             - name: KAFKA_CLUSTER
               value: 172.24.5.230:9094
             - name: CONSUMER_GROUP
