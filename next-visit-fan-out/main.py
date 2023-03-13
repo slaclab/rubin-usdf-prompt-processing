@@ -19,15 +19,7 @@ from kafkit.registry import Deserializer
 @dataclass
 class NextVisitModel:
     "Next Visit Message"
-    # private_efdStamp: float
-    # private_kafkaStamp: float
     salIndex: int
-    # private_revCode: str
-    # private_sndStamp: float
-    # private_rcvStamp: float
-    # private_seqNum: int
-    # private_identity: str
-    # private_origin: int
     scriptSalIndex: int
     groupId: str
     coordinateSystem: int
@@ -56,9 +48,8 @@ def detector_load(conf, instrument):
     detectors = conf[instrument]["detectors"]
     active_detectors = []
     for k, v in detectors.items():
-        if v["enabled"]:
-            active_detectors.append(v["value"])
-    print(active_detectors)
+        if v:
+            active_detectors.append(k)
     return active_detectors
 
 
