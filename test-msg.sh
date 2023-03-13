@@ -18,7 +18,7 @@ curl --request POST \
 			"private_identity": "ScriptQueue:2",
 			"private_origin": 2786567,
 			"scriptSalIndex": 200023,
-			"groupId": "test",
+			"groupId": "2023-01-23T23:33:14.762",
 			"coordinateSystem": 1,
 			"position": [
 				0,
