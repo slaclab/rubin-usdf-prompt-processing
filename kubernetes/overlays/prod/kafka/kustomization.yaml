@@ -2,7 +2,6 @@
 namespace: kafka
 
 resources:
-- ns-kafka.yaml
 - ns-strimzi.yaml
 - strimzi-operator.yaml
 - kafka-persistent-no-auth.yaml
