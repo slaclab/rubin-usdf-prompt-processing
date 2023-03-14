@@ -18,16 +18,16 @@ spec:
         - name: regcred
       containers:
         - name: nextvisit-start
-          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.42
+          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.43
           env:
             - name: DETECTOR_CONFIG_FILE
               value: detector.yaml
             - name: KAFKA_CLUSTER
-              value: 172.24.5.230:9094
+              value: 10.104.21.0:9094
             - name: CONSUMER_GROUP
-              value: test-group-3
-            - name: BUCKET_NOTIFY_TOPIC
-              value: test.next-visit
+              value: test-group-1
+            - name: NEXT_VISIT_TOPIC
+              value: lsst.sal.ScriptQueue.logevent_nextVisit
             - name: SASL_MECHANISM
               value: SCRAM-SHA-512
             - name: SECURITY_PROTOCOL
@@ -43,7 +43,7 @@ spec:
                   key: kafka_pp_sasl_password
                   name: kafka-sasl-prompt-prompt-processing
             - name: KAFKA_SCHEMA_REGISTRY_URL
-              value: http://10.99.65.182:8081
+              value: http://10.101.114.201:8081
             - name: KNATIVE_SERVING_URL
               value: http://next-visit-test.knative-serving.svc.cluster.local/next-visit
       volumes:
