@@ -1,0 +1,7 @@
+
+namespace: knative-serving
+resources:
+- ns.yaml
+- kourier.yaml
+- serving-core.yaml
+- serving-crds.yaml
