@@ -50,7 +50,7 @@ spec:
         - name: USER_REGISTRY
           value: rubin
         - name: KAFKA_CLUSTER
-          value: prompt-processing-kafka-bootstrap.kafka:9092
+          value: 172.24.5.234:9094
         - name: PSQL_REGISTRY_PASS
           valueFrom:
             secretKeyRef:
