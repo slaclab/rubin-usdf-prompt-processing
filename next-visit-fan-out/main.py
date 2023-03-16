@@ -40,6 +40,7 @@ class NextVisitModel:
             temp_message = next_visit_message_dict.copy()
             temp_message["instrument"] = instrument
             temp_message["detector"] = active_detector
+            # temporary change to modify blank filters to format expected by butler
             if temp_message["filters"] != "":
                 temp_message["filters"] = (
                     "SDSS" + temp_message["filters"] + "_65mm~empty"
@@ -149,7 +150,6 @@ async def main():
                             "totalCheckpoints"
                         ],
                     )
-                    print(next_visit_message_updated)
 
                     match next_visit_message_updated.salIndex:
                         case 2:  # LATISS
