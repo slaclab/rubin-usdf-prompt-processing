@@ -5,3 +5,5 @@ resources:
 - kourier.yaml
 - serving-core.yaml
 - serving-crds.yaml
+- knative-config-features.yaml
+- knative-config-gc.yaml

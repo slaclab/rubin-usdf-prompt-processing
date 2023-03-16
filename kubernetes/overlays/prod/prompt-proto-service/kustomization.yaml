@@ -1,0 +1,36 @@
+
+namespace: prompt-proto-service
+
+resources:
+- ns.yaml
+- prompt-proto-service-env.yaml
+
+
+secretGenerator:
+- name: usdf-prompt-processing-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/username
+  - etc/.secrets/password
+
+- name: usdf-butler-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/butler/username
+  - etc/.secrets/butler/password
+
+- name: s3-credentials
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/s3-buckets/s3_credentials_ini_file
+
+- name: regcred
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/docker/.dockerconfigjson
+  type: kubernetes.io/dockerconfigjson
+

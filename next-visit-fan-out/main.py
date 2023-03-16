@@ -40,6 +40,10 @@ class NextVisitModel:
             temp_message = next_visit_message_dict.copy()
             temp_message["instrument"] = instrument
             temp_message["detector"] = active_detector
+            if temp_message["filters"] != "":
+                temp_message["filters"] = (
+                    "SDSS" + temp_message["filters"] + "_65mm~empty"
+                )
             message_list.append(temp_message)
         return message_list
 
@@ -59,9 +63,10 @@ async def main():
     detector_config_file = os.environ["DETECTOR_CONFIG_FILE"]
     kafka_cluster = os.environ["KAFKA_CLUSTER"]
     group_id = os.environ["CONSUMER_GROUP"]
-    topic = os.environ["BUCKET_NOTIFY_TOPIC"]
+    topic = os.environ["NEXT_VISIT_TOPIC"]
     kafka_schema_registry_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
     knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
+    offset = os.environ["OFFSET"]
 
     # kafka auth
     sasl_username = os.environ["SASL_USERNAME"]
@@ -89,6 +94,7 @@ async def main():
         sasl_mechanism=sasl_mechanism,
         sasl_plain_username=sasl_username,
         sasl_plain_password=sasl_password,
+        auto_offset_reset=offset,
     )
 
     await consumer.start()
@@ -143,9 +149,10 @@ async def main():
                             "totalCheckpoints"
                         ],
                     )
+                    print(next_visit_message_updated)
 
                     match next_visit_message_updated.salIndex:
-                        case 1:  # LATISS
+                        case 2:  # LATISS
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "LATISS",
@@ -157,7 +164,7 @@ async def main():
                         #    fan_out_message_list = next_visit_message.add_detectors(
                         #        "LSSTComCam", next_visit_message, lsst_com_cam_active_detectors
                         #    )
-                        case 2:  # LSSTCam
+                        case 1:  # LSSTCam
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "LSSTCam",

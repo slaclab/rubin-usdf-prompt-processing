@@ -18,7 +18,7 @@ spec:
         - name: regcred
       containers:
         - name: nextvisit-start
-          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.43
+          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.45
           env:
             - name: DETECTOR_CONFIG_FILE
               value: detector.yaml
@@ -45,7 +45,9 @@ spec:
             - name: KAFKA_SCHEMA_REGISTRY_URL
               value: http://10.101.114.201:8081
             - name: KNATIVE_SERVING_URL
-              value: http://next-visit-test.knative-serving.svc.cluster.local/next-visit
+              value: http://prompt-proto-service.prompt-proto-service/next-visit
+            - name: OFFSET
+              value: latest
       volumes:
         - name: kafka-sasl-prompt-prompt-processing
           secret:
