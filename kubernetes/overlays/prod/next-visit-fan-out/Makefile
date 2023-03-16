@@ -1,6 +1,4 @@
 SECRET_PATH ?= secret/rubin/usdf-prompt-processing/next-visit-fan-out
-BUTLER_SECRET_PATH ?= secret/rubin/usdf-butler/postgres
-S3_SECRET_PATH ?= secret/rubin/usdf-prompt-processing/s3-buckets
 DOCKER_SECRET_PATH ?= secret/rubin/usdf-prompt-processing/docker
 
 get-secrets-from-vault:
