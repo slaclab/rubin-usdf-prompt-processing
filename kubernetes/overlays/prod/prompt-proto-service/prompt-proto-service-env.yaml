@@ -29,6 +29,8 @@ spec:
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
           value: rubin-summit
+        - name: IMAGE_TIMEOUT
+          value: '120'
         - name: CALIB_REPO
           value: /app/butler
         - name: IP_APDB
@@ -77,6 +79,8 @@ spec:
               key: secret_access_key
         - name: LOCAL_REPOS
           value: "/tmp-butler"
+        - name: SERVICE_LOG_LEVELS
+          value: lsst.resources=DEBUG
         volumeMounts:
           - mountPath: /tmp-butler
             name: ephemeral
@@ -102,4 +106,4 @@ spec:
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
-      timeoutSeconds: 600
+      timeoutSeconds: 900
