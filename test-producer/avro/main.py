@@ -7,11 +7,12 @@ import asyncio
 import typing
 
 import enum
+from enum import Enum
 import random
 
 from aiokafka import AIOKafkaProducer
 from dataclasses import dataclass
-from dataclasses_avroschema import AvroModel
+from dataclasses_avroschema import AvroModel, types
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -25,14 +26,33 @@ topic = "next_visit_avro_topic"
 msg_batch_size = 1
 
 
-class Instrument(enum.Enum):
-    LATISS = "LATISS"
-    LSSTCOMCAM = "LSSTComCam"
-    LSSTCAM = "LSSTCam"
+class CoordSys(enum.IntEnum):
+    # This is a redeclaration of lsst.ts.idl.enums.Script.MetadataCoordSys,
+    # but we need Visit to work in code that can't import lsst.ts.
+    NONE = 1
+    ICRS = 2
+    OBSERVED = 3
+    MOUNT = 4
 
 
 @dataclass
 class NextVisitModel(AvroModel):
+
+    coordsys = CoordSys
+
+    class RotSys(enum.IntEnum):
+        # Redeclaration of lsst.ts.idl.enums.Script.MetadataRotSys.
+        NONE = 1
+        SKY = 2
+        HORIZON = 3
+        MOUNT = 4
+
+    class Dome(enum.IntEnum):
+        # Redeclaration of lsst.ts.idl.enums.Script.MetadataDome.
+        CLOSED = 1
+        OPEN = 2
+        EITHER = 3
+
     "Next Visit Message"
     salIndex: int
     scriptSalIndex: int
@@ -40,6 +60,7 @@ class NextVisitModel(AvroModel):
     nimages: int
     filters: str
     coordinateSystem: int
+    # coordinateSystem: CoordSys = CoordSys.ICRS
     position: typing.List[int]
     rotationSystem: int
     cameraAngle: int
@@ -66,6 +87,8 @@ async def send(loop, total_events=3):
         print(f"Sending event number {event_number}")
 
         position_list = [0.0, 0.0]
+
+        print(CoordSys.ICRS.value)
 
         next_visit = NextVisitModel(
             salIndex=random.randint(1, 2),
