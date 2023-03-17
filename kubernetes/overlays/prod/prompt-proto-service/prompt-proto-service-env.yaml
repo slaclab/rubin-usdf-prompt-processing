@@ -12,7 +12,7 @@ spec:
         autoscaling.knative.dev/max-scale: "100"
         autoscaling.knative.dev/target-utilization-percentage: "80"
         # Update this field if `make apply` by itself doesn't make a new revision.
-        revision: "32"
+        revision: "33"
       creationTimestamp: null
     spec:
       containerConcurrency: 1
@@ -29,6 +29,8 @@ spec:
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
           value: rubin-summit
+        - name: BUCKET_TOPIC
+          value: rubin-prompt-processing-prod
         - name: IMAGE_TIMEOUT
           value: '120'
         - name: CALIB_REPO
