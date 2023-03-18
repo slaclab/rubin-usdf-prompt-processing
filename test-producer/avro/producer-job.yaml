@@ -1,8 +1,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nextvisit-producer-test
-  namespace: kafka
+  name: nextvisit-producer-
+  namespace: knative-eventing
   labels:
     app: nextvisit-producer
 spec:
@@ -17,7 +17,7 @@ spec:
           - name: KAFKA_CLUSTER
             value: prompt-processing-kafka-bootstrap.kafka:9092
           - name: BUCKET_NOTIFY_TOPIC
-            value: next-visit-topic
+            value: next-visit-test-topic
           - name: MSG_BATCH_SIZE
             value: "10"
       restartPolicy: Never

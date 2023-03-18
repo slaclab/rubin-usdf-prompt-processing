@@ -27,8 +27,8 @@ def main():
     )
 
     next_visit = {
-        "instrument": "NotACam",
-        "detector": 42,
+        "instrument": "LATISS",
+        # "detector": 42,
         "group": "visit-12882-20221027",
         "snaps": 2,
         "filter": "k1234",
@@ -39,9 +39,11 @@ def main():
     }
 
     for i in range(int(msg_batch_size)):
+        p.poll(0)
+        print(next_visit)
         p.produce(topic, json.dumps(next_visit).encode("utf-8"), callback=acked)
 
-    p.poll(1)
+    p.flush()
 
 
 if __name__ == "__main__":
