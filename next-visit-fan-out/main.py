@@ -85,6 +85,7 @@ async def main():
     latiss_active_detectors = detector_load(conf, "LATISS")
     lsst_com_cam_active_detectors = detector_load(conf, "LSSTComCam")
     lsst_cam_active_detectors = detector_load(conf, "LSSTCam")
+    hsc_active_detectors = detector_load(conf, "HSC")
 
     # kafka consumer setup
     consumer = AIOKafkaConsumer(
@@ -170,6 +171,14 @@ async def main():
                                     "LSSTCam",
                                     next_visit_message_updated,
                                     lsst_cam_active_detectors,
+                                )
+                            )
+                        case 999:  # HSC
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "HSC",
+                                    next_visit_message_updated,
+                                    hsc_active_detectors,
                                 )
                             )
                         case _:
