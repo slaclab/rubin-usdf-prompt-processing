@@ -40,8 +40,8 @@ class NextVisitModel:
             temp_message = next_visit_message_dict.copy()
             temp_message["instrument"] = instrument
             temp_message["detector"] = active_detector
-            # temporary change to modify blank filters to format expected by butler
-            if temp_message["filters"] != "":
+            # temporary change to modify short filter names to format expected by butler
+            if temp_message["filters"] != "" and len(temp_message["filters"]) == 1:
                 temp_message["filters"] = (
                     "SDSS" + temp_message["filters"] + "_65mm~empty"
                 )
