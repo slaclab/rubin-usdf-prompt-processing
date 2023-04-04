@@ -66,8 +66,8 @@ class NextVisitModel:
             temp_message = message.copy()
             temp_message["instrument"] = instrument
             temp_message["detector"] = active_detector
-            # temporary change to modify blank filters to format expected by butler
-            if temp_message["filters"] != "":
+            # temporary change to modify short filter names to format expected by butler
+            if temp_message["filters"] != "" and len(temp_message["filters"]) == 1:
                 temp_message["filters"] = (
                     "SDSS" + temp_message["filters"] + "_65mm~empty"
                 )
@@ -137,6 +137,7 @@ async def main() -> None:
     latiss_active_detectors = detector_load(conf, "LATISS")
     lsst_com_cam_active_detectors = detector_load(conf, "LSSTComCam")
     lsst_cam_active_detectors = detector_load(conf, "LSSTCam")
+    hsc_active_detectors = detector_load(conf, "HSC")
 
     # Start Prometheus endpoint
     start_http_server(8000)
@@ -224,6 +225,14 @@ async def main() -> None:
                                     "LSSTCam",
                                     dataclasses.asdict(next_visit_message_updated),
                                     lsst_cam_active_detectors,
+                                )
+                            )
+                        case 999:  # HSC
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "HSC",
+                                    next_visit_message_updated,
+                                    hsc_active_detectors,
                                 )
                             )
                         case _:
