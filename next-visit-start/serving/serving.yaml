@@ -19,4 +19,5 @@ spec:
       imagePullSecrets:
       - name: regcred
       containers:
-        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/next-visit-test:v1.3
+        #- image: us-central1-docker.pkg.dev/prompt-proto/prompt/next-visit-test:v1.3
+        - image: us-central1-docker.pkg.dev/prompt-proto/prompt/next-visit-test:23f4003-dirty

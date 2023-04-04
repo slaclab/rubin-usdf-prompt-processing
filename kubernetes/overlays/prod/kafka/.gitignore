@@ -1,0 +1,5 @@
+*.jks
+*.sif
+console.properties
+*.crt
+*.swp
