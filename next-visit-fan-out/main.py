@@ -7,13 +7,18 @@ import httpx
 import yaml
 import typing
 import dataclasses
-from aiokafka import AIOKafkaConsumer
+from aiokafka import AIOKafkaConsumer  # type:ignore
 from cloudevents.conversion import to_structured
 from cloudevents.http import CloudEvent
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from kafkit.registry.httpx import RegistryApi
 from kafkit.registry import Deserializer
+from prometheus_client import start_http_server, Summary
+
+# from collections.abc import Mapping, Sequence
+
+REQUEST_TIME = Summary("request_processing_seconds", "Time spent processing request")
 
 
 @dataclass
@@ -33,11 +38,32 @@ class NextVisitModel:
     survey: str
     totalCheckpoints: int
 
-    def add_detectors(self, instrument, message, active_detectors):
-        next_visit_message_dict = dataclasses.asdict(message)
-        message_list = []
+    def add_detectors(
+        self,
+        instrument: str,
+        message: dict,
+        active_detectors: list,
+    ) -> list[dict[str, str]]:
+
+        """Adds and duplicates next visit messages for fanout.
+
+        Parameters
+        ----------
+        instrument: `str`
+            The instrument to load detectors for.
+        message: `str`
+            The next visit message.
+        active_detectors: `list`
+            The active detectors for an instrument.
+        Yields
+        ------
+        message_list : `list`
+            The message list for fan out.
+        """
+        # next_visit_message_dict = dataclasses.asdict(message)
+        message_list: list[dict[str, str]] = []
         for active_detector in active_detectors:
-            temp_message = next_visit_message_dict.copy()
+            temp_message = message.copy()
             temp_message["instrument"] = instrument
             temp_message["detector"] = active_detector
             # temporary change to modify blank filters to format expected by butler
@@ -49,16 +75,42 @@ class NextVisitModel:
         return message_list
 
 
-def detector_load(conf, instrument):
+def detector_load(conf: dict, instrument: str) -> list[int]:
+
+    """Load active instrument detectors from yaml configiration file of
+    true false values for each detector.
+
+    Parameters
+    ----------
+    conf : `dict`
+        The instrument configuration from the yaml file.
+    instrument: `str`
+        The instrument to load detectors for.
+    Yields
+    ------
+    active_detectors : `list`
+        The active detectors for the instrument.
+    """
+
     detectors = conf[instrument]["detectors"]
-    active_detectors = []
+    active_detectors: list[int] = []
     for k, v in detectors.items():
         if v:
             active_detectors.append(k)
     return active_detectors
 
 
-async def main():
+@REQUEST_TIME.time()
+async def knative_request(client, knative_serving_url, headers, body):
+    await client.post(
+        knative_serving_url,
+        headers=headers,
+        data=body,  # type:ignore
+        timeout=None,
+    ),
+
+
+async def main() -> None:
 
     # Get environment variables
     detector_config_file = os.environ["DETECTOR_CONFIG_FILE"]
@@ -86,16 +138,18 @@ async def main():
     lsst_com_cam_active_detectors = detector_load(conf, "LSSTComCam")
     lsst_cam_active_detectors = detector_load(conf, "LSSTCam")
 
-    # kafka consumer setup
+    # Start Prometheus endpoint
+    start_http_server(8000)
+
     consumer = AIOKafkaConsumer(
         topic,
         bootstrap_servers=kafka_cluster,
         group_id=group_id,
+        auto_offset_reset=offset,
         security_protocol=security_protocol,
         sasl_mechanism=sasl_mechanism,
         sasl_plain_username=sasl_username,
         sasl_plain_password=sasl_password,
-        auto_offset_reset=offset,
     )
 
     await consumer.start()
@@ -156,7 +210,7 @@ async def main():
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "LATISS",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     latiss_active_detectors,
                                 )
                             )
@@ -168,7 +222,7 @@ async def main():
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "LSSTCam",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     lsst_cam_active_detectors,
                                 )
                             )
@@ -192,15 +246,18 @@ async def main():
                             headers, body = to_structured(event)
 
                             task = asyncio.create_task(
-                                client.post(
-                                    knative_serving_url,
-                                    headers=headers,
-                                    data=body,
-                                    timeout=None,
-                                ),
+                                knative_request(
+                                    client, knative_serving_url, headers, body
+                                )
+                                # client.post(
+                                #    knative_serving_url,
+                                #    headers=headers,
+                                #    data=body,  # type:ignore
+                                #    timeout=None,
+                                # ),
                             )
-
                             tasks.add(task)
+                            logging.info(task.result)
                             task.add_done_callback(tasks.discard)
 
                     except ValueError as e:
