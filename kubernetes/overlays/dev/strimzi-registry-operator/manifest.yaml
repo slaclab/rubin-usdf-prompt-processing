@@ -1,0 +1,191 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: strimzischemaregistries.roundtable.lsst.codes
+spec:
+  group: roundtable.lsst.codes
+  names:
+    kind: StrimziSchemaRegistry
+    plural: strimzischemaregistries
+    shortNames:
+    - ssrs
+    - ssr
+    singular: strimzischemaregistry
+  preserveUnknownFields: false
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: StrimziSchemaRegistry represents a desired Schema Registry instance
+        properties:
+          spec:
+            description: The specification of the Schema Registry instance.
+            properties:
+              compatibilityLevel:
+                default: forward
+                description: The default schema compatibility level in a subject.
+                  Can be none, backward, backward_transitive, forward, forward_transitive,
+                  full, and full_transitive.
+                type: string
+              cpuLimit:
+                default: ""
+                description: The cap on CPU usage for the Schema Registry container.
+                  Default is to leave unset. Example 1000m limits to 1 CPU.
+                type: string
+              cpuRequest:
+                default: ""
+                description: The requested CPU allocation for the Schema Registry
+                  container. Default is to leave unset. Example 1000m requests 1 CPU.
+                type: string
+              listener:
+                default: tls
+                description: The name of the Kafka listener to use to connect.
+                type: string
+              memoryLimit:
+                default: ""
+                description: The cap on memory usage for the Schema Registry container.
+                  Default is to leave unset. Example 1000M limits to 1000 megabytes.
+                type: string
+              memoryRequest:
+                default: ""
+                description: 'The requested memory for the Schema Registry container.
+                  Default is to leave unset. Example: `768M` requests 768 megabytes.'
+                type: string
+              registryImage:
+                default: confluentinc/cp-schema-registry
+                description: The Docker image for the Confluent Schema Registry.
+                type: string
+              registryImageTag:
+                default: 7.2.1
+                description: The Docker image tag for the Confluent Schema Registry.
+                  Use this property to control the version of the deployed schema
+                  registry.
+                type: string
+              securityProtocol:
+                default: SSL
+                description: The security protocol for the Schema Registry to communicate
+                  with Kafka. Default is SSL. Can be SSL, PLAINTEXT, SASL_PLAINTEXT,
+                  or SASL_SSL.
+                type: string
+              serviceType:
+                default: ClusterIP
+                description: The type of service to create for the registry. Default
+                  is ClusterIP. Can be NodePort to publish the registry externally.
+                type: string
+              strimzi-version:
+                default: v1beta2
+                description: Deprecated. Use strimziVersion instead.
+                type: string
+              strimziVersion:
+                default: v1beta2
+                description: The version of the Strimzi Custom Resource API to use.
+                  The correct value depends on the deployed version of Strimzi.
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: strimzi-registry-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: strimzi-registry-operator
+rules:
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - list
+  - get
+- apiGroups:
+  - events.k8s.io
+  resources:
+  - events
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+- apiGroups:
+  - roundtable.lsst.codes
+  resources:
+  - strimzischemaregistries
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+  - create
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+  - create
+- apiGroups:
+  - kafka.strimzi.io
+  resources:
+  - kafkausers
+  - kafkas
+  verbs:
+  - list
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: strimzi-registry-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: strimzi-registry-operator
+subjects:
+- kind: ServiceAccount
+  name: strimzi-registry-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strimzi-registry-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strimzi-registry-operator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: strimzi-registry-operator
+    spec:
+      containers:
+      - image: ghcr.io/lsst-sqre/strimzi-registry-operator:0.6.0
+        imagePullPolicy: IfNotPresent
+        name: operator
+      serviceAccountName: strimzi-registry-operator

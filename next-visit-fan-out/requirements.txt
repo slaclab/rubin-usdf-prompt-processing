@@ -8,3 +8,4 @@ dataclasses-avroschema
 PyYAML==6.0
 kafkit[httpx]
 kafkit
+prometheus-client

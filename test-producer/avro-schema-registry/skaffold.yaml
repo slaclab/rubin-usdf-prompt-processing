@@ -4,7 +4,7 @@ metadata:
   name: test-producer-avro-registry
 build:
   artifacts:
-  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer
+  - image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer-avro-registry
     docker:
       dockerfile: Dockerfile
 deploy:

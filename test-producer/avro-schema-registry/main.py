@@ -13,6 +13,7 @@ from enum import Enum
 import random
 
 from aiokafka import AIOKafkaProducer
+import dataclasses
 from dataclasses import dataclass
 from dataclasses_avroschema import AvroModel, types
 from kafkit.registry.httpx import RegistryApi
@@ -27,6 +28,12 @@ topic = os.environ["BUCKET_NOTIFY_TOPIC"]
 msg_batch_size = os.environ["MSG_BATCH_SIZE"]
 kafka_schema_registry_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
 
+# kafka auth
+sasl_username = os.environ["SASL_USERNAME"]
+sasl_password = os.environ["SASL_PASSWORD"]
+sasl_mechanism = os.environ["SASL_MECHANISM"]
+security_protocol = os.environ["SECURITY_PROTOCOL"]
+
 
 class CoordSys(enum.IntEnum):
     # This is a redeclaration of lsst.ts.idl.enums.Script.MetadataCoordSys,
@@ -38,7 +45,7 @@ class CoordSys(enum.IntEnum):
 
 
 @dataclass
-class NextVisitModel(AvroModel):
+class NextVisitModel:
 
     coordsys = CoordSys
 
@@ -56,7 +63,12 @@ class NextVisitModel(AvroModel):
         EITHER = 3
 
     "Next Visit Message"
+    private_efdStamp: int = "1674516757.7661333"
+    private_kafkaStamp: int = "1674516794.7740011"
     salIndex: int
+    private_revCode: str = "c9aab3df"
+    private_sndStamp: int = "1674516794.7661333"
+    private_rcvStamp: int = ""
     scriptSalIndex: int
     groupId: str
     nimages: int
@@ -80,13 +92,48 @@ def acked(err, msg):
 
 
 async def send(loop, total_events=3):
-    producer = AIOKafkaProducer(loop=loop, bootstrap_servers=kafka_cluster)
+    producer = AIOKafkaProducer(
+        loop=loop,
+        bootstrap_servers=kafka_cluster,
+        security_protocol=security_protocol,
+        sasl_mechanism=sasl_mechanism,
+        sasl_plain_username=sasl_username,
+        sasl_plain_password=sasl_password,
+    )
     # Get cluster layout and initial topic/partition leadership information
     await producer.start()
 
+    schema = {
+        "type": "record",
+        "name": "logevent_nextVisit",
+        "namespace": "lsst.sal.ScriptQueue",
+        "fields": [
+            {"name": "private_efdStamp", "type": "double"},
+            {"name": "private_kafkaStamp", "type": "double"},
+            {"name": "salIndex", "type": "long"},
+            {"name": "private_revCode", "type": "string"},
+            {"name": "private_sndStamp", "type": "double"},
+            {"name": "private_rcvStamp", "type": "double"},
+            {"name": "private_seqNum", "type": "long"},
+            {"name": "private_identity", "type": "string"},
+            {"name": "private_origin", "type": "long"},
+            {"name": "scriptSalIndex", "type": "long"},
+            {"name": "groupId", "type": "string"},
+            {"name": "coordinateSystem", "type": "long"},
+            {"name": "position", "type": {"type": "array", "items": "double"}},  # fix
+            {"name": "cameraAngle", "type": "double"},
+            {"name": "filters", "type": "string"},
+            {"name": "dome", "type": "long"},
+            {"name": "duration", "type": "double"},
+            {"name": "nimages", "type": "long"},
+            {"name": "survey", "type": "string"},
+            {"name": "totalCheckpoints", "type": "long"},
+        ],
+    }
+
     async with httpx.AsyncClient() as client:
         registry_api = RegistryApi(http_client=client, url=kafka_schema_registry_url)
-        serializer = Serializer(registry=registry_api)
+        serializer = await Serializer.register(registry=registry_api, schema=schema)
 
         for event_number in range(1, total_events + 1):
             # Produce message
@@ -118,8 +165,10 @@ async def send(loop, total_events=3):
                 totalCheckpoints=random.randint(1, 3),
             )
 
+            print(next_visit)
+
             # create the message
-            next_visit_message = await serializer.serialize(data=next_visit.value)
+            next_visit_message = await serializer(dataclasses.asdict(next_visit))
 
             await producer.send_and_wait(topic, next_visit_message)
             # sleep for 2 seconds

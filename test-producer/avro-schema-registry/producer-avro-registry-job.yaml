@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nextvisit-producer-schema-
+  namespace: next-visit-fan-out
+  labels:
+    app: nextvisit-producer-schema
+spec:
+  template:
+    spec:
+      containers:
+      - name: nextvisit-producer-schema
+        image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-producer-avro-registry:v10
+        command: [ "python3", "main.py"]
+        env:
+          - name: KAFKA_CLUSTER
+            value: 10.96.224.141:9094
+          - name: KAFKA_SCHEMA_REGISTRY_URL
+            value: http://10.99.65.182:8081
+          - name: BUCKET_NOTIFY_TOPIC
+            value: test.next-visit
+          - name: MSG_BATCH_SIZE
+            value: "1"
+          - name: SASL_MECHANISM
+            value: SCRAM-SHA-512
+          - name: SECURITY_PROTOCOL
+            value: SASL_PLAINTEXT
+          - name: SASL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: kafka_pp_sasl_username
+                name: kafka-sasl-prompt-prompt-processing
+          - name: SASL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: kafka_pp_sasl_password
+                name: kafka-sasl-prompt-prompt-processing
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
+  backoffLimit: 2
