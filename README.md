@@ -16,3 +16,7 @@ If performing local deployments below are links to kubectl and kustomize.
 [Kustomize download](https://kubectl.docs.kubernetes.io/installation/kustomize/)
 
 kubectl port-forward svc/prometheus-grafana 8080:80 -n prometheus
+
+## View messages in topic
+
+kubectl -n kafka run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.33.2-kafka-3.4.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server prompt-processing-kafka-bootstrap:9092 --topic rubin-prompt-processing-prod --from-beginning

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next-visit-fan-out
+  annotations:
+     prometheus.io/scrape: 'true'
+  labels:
+    app: next-visit-fan-out
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: next-visit-fan-out
+  template:
+    metadata:
+      labels:
+        app: next-visit-fan-out
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: nextvisit-start
+          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.53
+          env:
+            - name: DETECTOR_CONFIG_FILE
+              value: detector.yaml
+            - name: KAFKA_CLUSTER
+              value: 10.96.224.141:9094
+            - name: CONSUMER_GROUP
+              value: test-group-3
+            - name: NEXT_VISIT_TOPIC
+              value: test.next-visit
+            - name: SASL_MECHANISM
+              value: SCRAM-SHA-512
+            - name: SECURITY_PROTOCOL
+              value: SASL_PLAINTEXT
+            - name: SASL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: kafka_pp_sasl_username
+                  name: kafka-sasl-prompt-prompt-processing
+            - name: SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: kafka_pp_sasl_password
+                  name: kafka-sasl-prompt-prompt-processing
+            - name: KAFKA_SCHEMA_REGISTRY_URL
+              value: http://10.99.65.182:8081
+            - name: KNATIVE_SERVING_URL
+              value: http://prompt-proto-service.prompt-proto-service/next-visit
+            - name: OFFSET
+              value: latest
+      volumes:
+        - name: kafka-sasl-prompt-prompt-processing
+          secret:
+            secretName: kafka-sasl-prompt-prompt-processing
+          
