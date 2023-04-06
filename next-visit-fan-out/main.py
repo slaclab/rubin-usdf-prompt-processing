@@ -14,9 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from kafkit.registry.httpx import RegistryApi
 from kafkit.registry import Deserializer
-from prometheus_client import start_http_server, Summary
-
-# from collections.abc import Mapping, Sequence
+from prometheus_client import start_http_server, Summary  # type:ignore
+from prometheus_client import Gauge
 
 REQUEST_TIME = Summary("request_processing_seconds", "Time spent processing request")
 
@@ -44,7 +43,6 @@ class NextVisitModel:
         message: dict,
         active_detectors: list,
     ) -> list[dict[str, str]]:
-
         """Adds and duplicates next visit messages for fanout.
 
         Parameters
@@ -60,7 +58,6 @@ class NextVisitModel:
         message_list : `list`
             The message list for fan out.
         """
-        # next_visit_message_dict = dataclasses.asdict(message)
         message_list: list[dict[str, str]] = []
         for active_detector in active_detectors:
             temp_message = message.copy()
@@ -76,7 +73,6 @@ class NextVisitModel:
 
 
 def detector_load(conf: dict, instrument: str) -> list[int]:
-
     """Load active instrument detectors from yaml configiration file of
     true false values for each detector.
 
@@ -101,13 +97,35 @@ def detector_load(conf: dict, instrument: str) -> list[int]:
 
 
 @REQUEST_TIME.time()
-async def knative_request(client, knative_serving_url, headers, body):
-    await client.post(
+async def knative_request(
+    in_process_requests_gauge,
+    client: httpx.AsyncClient,
+    knative_serving_url: str,
+    headers: dict[str, str],
+    body: bytes,
+) -> None:
+    """Makes knative http request.
+
+    Parameters
+    ----------
+    client: `httpx.AsyncClient`
+        The async httpx client.
+    knative_serving_url : `string`
+        The url for the knative instance.
+    headers: dict[`str,'str']
+        The headers to pass to knative.
+    body: `bytes`
+        The next visit message body.
+    """
+    in_process_requests_gauge.inc()
+    r = await client.post(
         knative_serving_url,
         headers=headers,
         data=body,  # type:ignore
         timeout=None,
-    ),
+    )
+    logging.info(r)
+    in_process_requests_gauge.dec()
 
 
 async def main() -> None:
@@ -151,6 +169,23 @@ async def main() -> None:
         sasl_mechanism=sasl_mechanism,
         sasl_plain_username=sasl_username,
         sasl_plain_password=sasl_password,
+    )
+
+    latiss_gauge = Gauge(
+        "latiss_next_visit_messages", "next visit nessages with latiss as instrument"
+    )
+    lsstcam_gauge = Gauge(
+        "lsstcam_next_visit_messages", "next visit nessages with lsstcam as instrument"
+    )
+    lsstcomcam_gauge = Gauge(
+        "lsstcomcam_next_visit_messages",
+        "next visit nessages with lsstcomcam as instrument",
+    )
+    hsc_gauge = Gauge(
+        "hsc_next_visit_messages", "next visit nessages with hsc as instrument"
+    )
+    in_process_requests_gauge = Gauge(
+        "prompt_processing_in_process_requests", "In process requests for next visit"
     )
 
     await consumer.start()
@@ -208,6 +243,7 @@ async def main() -> None:
 
                     match next_visit_message_updated.salIndex:
                         case 2:  # LATISS
+                            latiss_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "LATISS",
@@ -220,6 +256,7 @@ async def main() -> None:
                         #        "LSSTComCam", next_visit_message, lsst_com_cam_active_detectors
                         #    )
                         case 1:  # LSSTCam
+                            lsstcam_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "LSSTCam",
@@ -228,10 +265,11 @@ async def main() -> None:
                                 )
                             )
                         case 999:  # HSC
+                            hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "HSC",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors,
                                 )
                             )
@@ -256,14 +294,12 @@ async def main() -> None:
 
                             task = asyncio.create_task(
                                 knative_request(
-                                    client, knative_serving_url, headers, body
+                                    in_process_requests_gauge,
+                                    client,
+                                    knative_serving_url,
+                                    headers,
+                                    body,
                                 )
-                                # client.post(
-                                #    knative_serving_url,
-                                #    headers=headers,
-                                #    data=body,  # type:ignore
-                                #    timeout=None,
-                                # ),
                             )
                             tasks.add(task)
                             logging.info(task.result)

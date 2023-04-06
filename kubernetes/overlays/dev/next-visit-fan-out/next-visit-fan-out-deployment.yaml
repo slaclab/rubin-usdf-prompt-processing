@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: next-visit-fan-out
-  annotations:
-     prometheus.io/scrape: 'true'
   labels:
     app: next-visit-fan-out
 spec:
@@ -15,12 +13,15 @@ spec:
     metadata:
       labels:
         app: next-visit-fan-out
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
     spec:
       imagePullSecrets:
         - name: regcred
       containers:
         - name: nextvisit-start
-          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.53
+          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.60
           env:
             - name: DETECTOR_CONFIG_FILE
               value: detector.yaml
