@@ -17,7 +17,7 @@ spec:
     spec:
       containerConcurrency: 1
       containers:
-      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
+      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-36162-latest
         imagePullPolicy: Always
         name: user-container
         env:
@@ -91,4 +91,4 @@ spec:
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
-      timeoutSeconds: 600
+      timeoutSeconds: 900

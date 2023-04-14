@@ -4,8 +4,27 @@ metadata:
   name: prompt-processing
   namespace: kafka
 spec:
+  kafkaExporter:
+    groupRegex: ".*"
+    topicRegex: ".*"
+    logging: debug
+    enableSaramaLogging: true
+    template:
+      deployment:
+        metadata:
+          annotations:
+            prometheus.io/scrape: 'true'      
+      pod:
+        metadata:
+          annotations:
+            prometheus.io/scrape: 'true'
   kafka:
-    version: 3.2.3
+    template:
+      pod:
+        metadata:
+          annotations:
+            prometheus.io/scrape: 'true'
+    version: 3.4.0
     replicas: 1
     listeners:
       - name: plain
@@ -42,6 +61,12 @@ spec:
         type: persistent-claim
         size: 100Gi
         deleteClaim: false
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: kafka-metrics-config.yml
   zookeeper:
     replicas: 1
     storage:
