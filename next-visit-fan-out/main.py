@@ -282,7 +282,7 @@ async def main() -> None:
                             hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
-                                    "HSC-TEST-59134",
+                                    "HSC",
                                     dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59134,
                                 )
@@ -291,7 +291,7 @@ async def main() -> None:
                             hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
-                                    "HSC-TEST-59142",
+                                    "HSC",
                                     dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59142,
                                 )
@@ -300,7 +300,7 @@ async def main() -> None:
                             hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
-                                    "HSC-TEST-59150",
+                                    "HSC",
                                     dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59150,
                                 )
@@ -309,7 +309,7 @@ async def main() -> None:
                             hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
-                                    "HSC-TEST-59160",
+                                    "HSC",
                                     dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59160,
                                 )
