@@ -309,3 +309,21 @@ HSC:
     101: True
     102: True
     103: True
+HSC-TEST-59134:
+  detectors:
+    0: True
+    4: True
+    5: True
+HSC-TEST-59142:
+  detectors:
+    0: True
+    5: True
+    11: True
+HSC-TEST-59150:
+  detectors:
+    50: True
+    58: True
+HSC-TEST-59160:
+  detectors:
+    43: True
+    51: True
