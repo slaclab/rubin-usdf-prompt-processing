@@ -279,34 +279,38 @@ async def main() -> None:
                                 )
                             )
                         case 59134:  # HSC upload.py test dataset
+                            hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "HSC-TEST-59134",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59134,
                                 )
                             )
                         case 59142:  # HSC upload.py test dataset
+                            hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "HSC-TEST-59142",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59142,
                                 )
                             )
                         case 59150:  # HSC upload.py test dataset
+                            hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "HSC-TEST-59150",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59150,
                                 )
                             )
                         case 59160:  # HSC upload.py test dataset
+                            hsc_gauge.inc()
                             fan_out_message_list = (
                                 next_visit_message_updated.add_detectors(
                                     "HSC-TEST-59160",
-                                    next_visit_message_updated,
+                                    dataclasses.asdict(next_visit_message_updated),
                                     hsc_active_detectors_59160,
                                 )
                             )
