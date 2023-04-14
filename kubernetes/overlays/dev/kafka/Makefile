@@ -1,9 +1,9 @@
 
 NAMESPACE ?= kafka
 
-SINGULARITY_IMAGE ?= kafka_0.31.1-kafka-3.2.3.sif
+SINGULARITY_IMAGE ?= kafka_0.34.0-kafka-3.4.0.sif
 
-BOOTSTRAP_SERVER ?= 172.24.5.223:9094
+BOOTSTRAP_SERVER ?= 172.24.5.206:9094
 KAFKA_PROPERTIES ?= console.properties
 
 # the k8s secret object container the the user creds
@@ -29,7 +29,7 @@ jks:
 	rm cluster.crt
 
 create-singularity:
-	singularity pull -F docker://quay.io/strimzi/kafka:0.31.1-kafka-3.2.3
+	singularity pull -F docker://quay.io/strimzi/kafka:0.34.0-kafka-3.4.0
 
 create-properties:
 	echo "sasl.mechanism=SCRAM-SHA-512" > $(KAFKA_PROPERTIES)
@@ -46,6 +46,11 @@ producer: create-properties
 
 receiver: create-properties
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic $(KAFKA_TOPIC) --group $(KAFKA_GROUP) --consumer.config=$(KAFKA_PROPERTIES)
+
+list-topics:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server $(BOOTSTRAP_SERVER) --list
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server $(BOOTSTRAP_SERVER) --alter --topic rubin-prompy-processing --partitions 200
+	singularity exec kafka_0.34.0-kafka-3.4.0.sif /opt/kafka/bin/kafka-topics.sh --bootstrap-server 172.24.5.206:9094 --alter --topic rubin-prompt-processing --partitions 200
 
 
 run-dump:
