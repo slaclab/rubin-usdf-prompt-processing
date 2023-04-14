@@ -4,6 +4,6 @@ namespace: kafka
 resources:
 - ns.yaml
 - strimzi-operator.yaml
-- kafka-persistent-single.yaml
+- kafka-persistent-single-no-auth.yaml
 #- kafka-yee-cluster.yaml
 #- kafka-yee-users.yaml
