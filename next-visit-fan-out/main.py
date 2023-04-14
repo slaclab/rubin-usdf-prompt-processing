@@ -138,6 +138,11 @@ async def main() -> None:
     lsst_com_cam_active_detectors = detector_load(conf, "LSSTComCam")
     lsst_cam_active_detectors = detector_load(conf, "LSSTCam")
     hsc_active_detectors = detector_load(conf, "HSC")
+    # These four groups are for the small dataset used in the upload.py test
+    hsc_active_detectors_59134 = detector_load(conf, "HSC-TEST-59134")
+    hsc_active_detectors_59142 = detector_load(conf, "HSC-TEST-59142")
+    hsc_active_detectors_59150 = detector_load(conf, "HSC-TEST-59150")
+    hsc_active_detectors_59160 = detector_load(conf, "HSC-TEST-59160")
 
     # Start Prometheus endpoint
     start_http_server(8000)
@@ -233,6 +238,38 @@ async def main() -> None:
                                     "HSC",
                                     next_visit_message_updated,
                                     hsc_active_detectors,
+                                )
+                            )
+                        case 59134:  # HSC upload.py test dataset
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "HSC-TEST-59134",
+                                    next_visit_message_updated,
+                                    hsc_active_detectors_59134,
+                                )
+                            )
+                        case 59142:  # HSC upload.py test dataset
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "HSC-TEST-59142",
+                                    next_visit_message_updated,
+                                    hsc_active_detectors_59142,
+                                )
+                            )
+                        case 59150:  # HSC upload.py test dataset
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "HSC-TEST-59150",
+                                    next_visit_message_updated,
+                                    hsc_active_detectors_59150,
+                                )
+                            )
+                        case 59160:  # HSC upload.py test dataset
+                            fan_out_message_list = (
+                                next_visit_message_updated.add_detectors(
+                                    "HSC-TEST-59160",
+                                    next_visit_message_updated,
+                                    hsc_active_detectors_59160,
                                 )
                             )
                         case _:
