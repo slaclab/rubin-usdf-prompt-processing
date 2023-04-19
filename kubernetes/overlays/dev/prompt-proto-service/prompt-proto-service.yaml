@@ -17,7 +17,7 @@ spec:
     spec:
       containerConcurrency: 1
       containers:
-      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-36162-latest
+      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-38752-latest
         imagePullPolicy: Always
         name: user-container
         env:
@@ -29,6 +29,10 @@ spec:
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
           value: rubin-pp
+        - name: BUCKET_TOPIC
+          value: rubin-prompt-processing
+        - name: IMAGE_TIMEOUT
+          value: '120'
         - name: CALIB_REPO
           value: s3://rubin-pp-users/central_repo/
         - name: IP_APDB
@@ -80,14 +84,14 @@ spec:
           requests:
             ephemeral-storage: "8Gi"
           limits:
-            ephemeral-storage: "14Gi"
+            ephemeral-storage: "20Gi"
       volumes:
       - name: s3-credentials-file
         secret:
           secretName: s3-credentials-file
       - name: ephemeral
         emptyDir:
-          sizeLimit: "14Gi"
+          sizeLimit: "20Gi"
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
