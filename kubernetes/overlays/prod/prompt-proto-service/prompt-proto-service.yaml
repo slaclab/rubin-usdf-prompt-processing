@@ -87,8 +87,9 @@ spec:
           - mountPath: /tmp-butler
             name: ephemeral
             readOnly: false
-          - mountPath: /app/butler/
+          - mountPath: /app/butler/butler.yaml
             name: central-repo-file
+            subPath: butler.yaml
         readinessProbe:
           successThreshold: 1
           tcpSocket:
