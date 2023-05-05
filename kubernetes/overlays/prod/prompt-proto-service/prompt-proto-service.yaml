@@ -17,7 +17,7 @@ spec:
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:latest
+      - image: ghcr.io/lsst-dm/prompt-proto-service:d_2023_05_01
         imagePullPolicy: Always
         name: user-container
         env:
@@ -99,12 +99,12 @@ spec:
           limits:
             ephemeral-storage: "20Gi"
       volumes:
-      - name: central-repo-file
-        secret:
-          secretName: central-repo-file3
       - name: ephemeral
         emptyDir:
           sizeLimit: "20Gi"
+      - name: central-repo-file
+        secret:
+          secretName: central-repo-file3
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
