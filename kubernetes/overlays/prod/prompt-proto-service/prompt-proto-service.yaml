@@ -12,12 +12,12 @@ spec:
         autoscaling.knative.dev/max-scale: "100"
         autoscaling.knative.dev/target-utilization-percentage: "80"
         # Update this field if `make apply` by itself doesn't make a new revision.
-        revision: "32"
+        revision: "34"
       creationTimestamp: null
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:DM-38269-latest
+      - image: ghcr.io/lsst-dm/prompt-proto-service:latest
         imagePullPolicy: Always
         name: user-container
         env:
@@ -29,6 +29,10 @@ spec:
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
           value: rubin-summit
+        - name: BUCKET_TOPIC
+          value: rubin-prompt-processing-prod
+        - name: IMAGE_TIMEOUT
+          value: '120'
         - name: CALIB_REPO
           value: /app/butler
         - name: IP_APDB
@@ -47,6 +51,8 @@ spec:
           value: lsstdb1
         - name: USER_REGISTRY
           value: rubin
+        #- name: PGUSER
+        #  value: rubin
         - name: KAFKA_CLUSTER
           value: prompt-processing-kafka-bootstrap.kafka:9092
         - name: USER_REGISTRY
@@ -63,14 +69,21 @@ spec:
               key: password
         - name: S3_ENDPOINT_URL
           value: https://s3dfrgw.slac.stanford.edu
-        - name: AWS_SHARED_CREDENTIALS_FILE
-          value: /app/s3/credentials
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: access_key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: secret_key
         - name: LOCAL_REPOS
           value: "/tmp-butler"
+        - name: SERVICE_LOG_LEVELS
+          value: lsst.resources=DEBUG
         volumeMounts:
-          - mountPath: /app/s3/credentials
-            name: s3-credentials-file
-            subPath: credentials
           - mountPath: /tmp-butler
             name: ephemeral
             readOnly: false
@@ -84,18 +97,15 @@ spec:
           requests:
             ephemeral-storage: "8Gi"
           limits:
-            ephemeral-storage: "14Gi"
+            ephemeral-storage: "20Gi"
       volumes:
-      - name: s3-credentials-file
-        secret:
-          secretName: s3-temp
       - name: central-repo-file
         secret:
           secretName: central-repo-file3
       - name: ephemeral
         emptyDir:
-          sizeLimit: "14Gi"
+          sizeLimit: "20Gi"
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
-      timeoutSeconds: 600
+      timeoutSeconds: 900
