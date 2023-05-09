@@ -1,0 +1,45 @@
+
+namespace: latiss-prompt-proto-service
+
+resources:
+- ../../../base/prompt-proto-service
+- ns.yaml
+
+patches:
+- path: patch.yaml
+  target:
+    kind: Service
+
+namePrefix:
+  latiss-
+
+secretGenerator:
+- name: usdf-prompt-processing-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/username
+  - etc/.secrets/password
+
+- name: usdf-butler-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/butler/username
+  - etc/.secrets/butler/password
+
+- name: s3-credentials
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/s3-buckets/s3_credentials_ini_file
+
+- name: regcred
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/docker/.dockerconfigjson
+  type: kubernetes.io/dockerconfigjson
+
+
+
