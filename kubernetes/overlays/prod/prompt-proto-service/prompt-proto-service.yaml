@@ -17,7 +17,7 @@ spec:
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:d_2023_05_01
+      - image: ghcr.io/lsst-dm/prompt-proto-service:AuxTel20230509-d_2023_05_01
         imagePullPolicy: Always
         name: user-container
         env:
@@ -32,7 +32,7 @@ spec:
         - name: BUCKET_TOPIC
           value: rubin-prompt-processing-prod
         - name: IMAGE_TIMEOUT
-          value: '120'
+          value: '600'
         - name: CALIB_REPO
           value: /app/butler
         - name: IP_APDB
