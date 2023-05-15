@@ -7,17 +7,15 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
         autoscaling.knative.dev/min-scale: "1"
-        autoscaling.knative.dev/max-scale: "10"
-        autoscaling.knative.dev/target-utilization-percentage: "80"
+        autoscaling.knative.dev/max-scale: "3"
         # Update this field if `make apply` by itself doesn't make a new revision.
         revision: "1"
     spec:
       containers:
-      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-38752-latest
+      - name: user-container
+        image: ghcr.io/lsst-dm/prompt-proto-service:TAG
         imagePullPolicy: Always
-        name: user-container
         env:
         - name: RUBIN_INSTRUMENT
           value: LATISS
@@ -30,7 +28,7 @@ spec:
         - name: IMAGE_TIMEOUT
           value: '120'
         - name: CALIB_REPO
-          value: s3://rubin-pp-users/central_repo/
+          value: /app/butler
         - name: IP_APDB
           # Need explicit port for make_pgpass.py
           value: usdf-prompt-processing-dev.slac.stanford.edu:5432
@@ -42,52 +40,53 @@ spec:
           value: pp_apdb
         - name: IP_REGISTRY
           # Need explicit port for make_pgpass.py
-          value: usdf-prompt-processing-dev.slac.stanford.edu:5432
+          value: usdf-butler.slac.stanford.edu:5432
         - name: DB_REGISTRY
-          value: ppcentralbutler
+          value: lsstdb1
         - name: USER_REGISTRY
-          value: pp
+          value: rubin
         - name: KAFKA_CLUSTER
           value: prompt-processing-kafka-bootstrap.kafka:9092
         - name: PSQL_REGISTRY_PASS
           valueFrom:
             secretKeyRef:
-              name: usdf-pp-creds
+              name: latiss-usdf-butler-creds
               key: password
         - name: PSQL_APDB_PASS
           valueFrom:
             secretKeyRef:
-              name: usdf-prompt-processing-creds
+              name: latiss-usdf-apdb-creds
               key: password
         - name: S3_ENDPOINT_URL
           value: https://s3dfrgw.slac.stanford.edu
-        - name: AWS_SHARED_CREDENTIALS_FILE
-          value: /app/s3/credentials
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: access_key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: secret_key
         - name: LOCAL_REPOS
           value: "/tmp-butler"
         volumeMounts:
-          - mountPath: /app/s3/credentials
-            name: s3-credentials-file
-            subPath: credentials
           - mountPath: /tmp-butler
             name: ephemeral
             readOnly: false
-        readinessProbe:
-          successThreshold: 1
-          tcpSocket:
-            port: 0
+          - mountPath: /app/butler
+            name: central-repo-file
         resources:
           requests:
             ephemeral-storage: "8Gi"
           limits:
             ephemeral-storage: "20Gi"
       volumes:
-      - name: s3-credentials-file
-        secret:
-          secretName: s3-credentials-file
       - name: ephemeral
         emptyDir:
           sizeLimit: "20Gi"
-      imagePullSecrets:
-      - name: regcred
+      - name: central-repo-file
+        secret:
+          secretName: latiss-central-repo-file
       timeoutSeconds: 900
