@@ -13,13 +13,26 @@ patches:
 namePrefix:
   latiss-
 
+images:
+- name: ghcr.io/lsst-dm/prompt-proto-service:TAG
+  newName: ghcr.io/lsst-dm/prompt-proto-service
+  newTag: AuxTel20230509-d_2023_05_01
+
 secretGenerator:
-- name: usdf-prompt-processing-creds
+
+- name: s3-creds
   options:
     disableNameSuffixHash: true
   files:
-  - etc/.secrets/username
-  - etc/.secrets/password
+  - etc/.secrets/s3/access_key
+  - etc/.secrets/s3/secret_key
+
+- name: usdf-apdb-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/apdb/username
+  - etc/.secrets/apdb/password
 
 - name: usdf-butler-creds
   options:
@@ -28,18 +41,11 @@ secretGenerator:
   - etc/.secrets/butler/username
   - etc/.secrets/butler/password
 
-- name: s3-credentials
+- name: central-repo-file
   options:
     disableNameSuffixHash: true
   files:
-  - etc/.secrets/s3-buckets/s3_credentials_ini_file
-
-- name: regcred
-  options:
-    disableNameSuffixHash: true
-  files:
-  - etc/.secrets/docker/.dockerconfigjson
-  type: kubernetes.io/dockerconfigjson
+  - etc/.secrets/central-repo/butler.yaml
 
 
 
