@@ -1,0 +1,51 @@
+
+namespace: latiss-prompt-proto-service
+
+resources:
+- ../../../base/prompt-proto-service
+- ns.yaml
+
+patches:
+- path: patch.yaml
+  target:
+    kind: Service
+
+namePrefix:
+  latiss-
+
+images:
+- name: ghcr.io/lsst-dm/prompt-proto-service:TAG
+  newName: ghcr.io/lsst-dm/prompt-proto-service
+  newTag: AuxTel20230509-d_2023_05_01
+
+secretGenerator:
+
+- name: s3-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/s3/access_key
+  - etc/.secrets/s3/secret_key
+
+- name: usdf-apdb-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/apdb/username
+  - etc/.secrets/apdb/password
+
+- name: usdf-butler-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/butler/username
+  - etc/.secrets/butler/password
+
+- name: central-repo-file
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/central-repo/butler.yaml
+
+
+

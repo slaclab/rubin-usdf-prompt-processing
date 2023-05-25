@@ -8,18 +8,17 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
-        autoscaling.knative.dev/initial-scale: "3"
-        autoscaling.knative.dev/min-scale: "3"
-        autoscaling.knative.dev/max-scale: "20"
-        autoscaling.knative.dev/target-utilization-percentage: "10"
-        autoscaling.knative.dev/scale-down-delay: "15m"
+        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/max-scale: "100"
+        autoscaling.knative.dev/target-utilization-percentage: "80"
         # Update this field if `make apply` by itself doesn't make a new revision.
-        revision: "34"
+        revision: "32"
+      creationTimestamp: null
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:AuxTel20230524-w_2023_20
-        imagePullPolicy: Always
+      - image: ghcr.io/lsst-dm/prompt-proto-service:TAG
+        imagePullPolicy: IfNotPresent
         name: user-container
         env:
         - name: RUBIN_INSTRUMENT
@@ -29,9 +28,9 @@ spec:
         - name: PUBSUB_VERIFICATION_TOKEN
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
-          value: rubin-summit
+          value: rubin-pp
         - name: BUCKET_TOPIC
-          value: rubin-prompt-processing-prod
+          value: rubin-prompt-processing
         - name: IMAGE_TIMEOUT
           value: '120'
         - name: CALIB_REPO
@@ -52,12 +51,8 @@ spec:
           value: lsstdb1
         - name: USER_REGISTRY
           value: rubin
-        #- name: PGUSER
-        #  value: rubin
         - name: KAFKA_CLUSTER
           value: prompt-processing-kafka-bootstrap.kafka:9092
-        - name: USER_REGISTRY
-          value: rubin
         - name: PSQL_REGISTRY_PASS
           valueFrom:
             secretKeyRef:
@@ -82,18 +77,12 @@ spec:
               key: secret_key
         - name: LOCAL_REPOS
           value: "/tmp-butler"
-        - name: SERVICE_LOG_LEVELS
-          value: lsst.resources=DEBUG
         volumeMounts:
           - mountPath: /tmp-butler
             name: ephemeral
             readOnly: false
-          - mountPath: /app/butler/
-            name: central-repo-file
         readinessProbe:
           successThreshold: 1
-          failureThreshold: 3
-          periodSeconds: 60
           tcpSocket:
             port: 0
         resources:
@@ -102,13 +91,8 @@ spec:
           limits:
             ephemeral-storage: "20Gi"
       volumes:
-      - name: central-repo-file
-        secret:
-          secretName: central-repo-file3
       - name: ephemeral
         emptyDir:
           sizeLimit: "20Gi"
       enableServiceLinks: false
-      imagePullSecrets:
-      - name: regcred
-      timeoutSeconds: 900
+      timeoutSeconds: 600

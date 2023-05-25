@@ -46,6 +46,8 @@ producer: create-properties
 
 receiver: create-properties
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic $(KAFKA_TOPIC) --group $(KAFKA_GROUP) --consumer.config=$(KAFKA_PROPERTIES)
+	singularity exec kafka_0.34.0-kafka-3.4.0.sif /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 172.24.5.206:9094 --topic rubin-prompt-processing --group test-1 --from-beginning 
+
 
 list-topics:
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server $(BOOTSTRAP_SERVER) --list
