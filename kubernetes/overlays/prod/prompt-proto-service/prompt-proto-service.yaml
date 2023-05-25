@@ -8,16 +8,17 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
-        autoscaling.knative.dev/min-scale: "1"
-        autoscaling.knative.dev/max-scale: "100"
-        autoscaling.knative.dev/target-utilization-percentage: "80"
+        autoscaling.knative.dev/initial-scale: "3"
+        autoscaling.knative.dev/min-scale: "3"
+        autoscaling.knative.dev/max-scale: "20"
+        autoscaling.knative.dev/target-utilization-percentage: "10"
+        autoscaling.knative.dev/scale-down-delay: "15m"
         # Update this field if `make apply` by itself doesn't make a new revision.
-        revision: "32"
-      creationTimestamp: null
+        revision: "34"
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:DM-38269-latest
+      - image: ghcr.io/lsst-dm/prompt-proto-service:AuxTel20230524-w_2023_20
         imagePullPolicy: Always
         name: user-container
         env:
@@ -29,6 +30,10 @@ spec:
           value: rubin-prompt-proto-main
         - name: IMAGE_BUCKET
           value: rubin-summit
+        - name: BUCKET_TOPIC
+          value: rubin-prompt-processing-prod
+        - name: IMAGE_TIMEOUT
+          value: '120'
         - name: CALIB_REPO
           value: /app/butler
         - name: IP_APDB
@@ -63,14 +68,19 @@ spec:
               key: password
         - name: S3_ENDPOINT_URL
           value: https://s3dfrgw.slac.stanford.edu
-        - name: AWS_SHARED_CREDENTIALS_FILE
-          value: /app/s3/credentials
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: access_key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: secret_key
         - name: LOCAL_REPOS
           value: "/tmp-butler"
         volumeMounts:
-          - mountPath: /app/s3/credentials
-            name: s3-credentials-file
-            subPath: credentials
           - mountPath: /tmp-butler
             name: ephemeral
             readOnly: false
@@ -78,24 +88,23 @@ spec:
             name: central-repo-file
         readinessProbe:
           successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 60
           tcpSocket:
             port: 0
         resources:
           requests:
             ephemeral-storage: "8Gi"
           limits:
-            ephemeral-storage: "14Gi"
+            ephemeral-storage: "20Gi"
       volumes:
-      - name: s3-credentials-file
-        secret:
-          secretName: s3-temp
       - name: central-repo-file
         secret:
           secretName: central-repo-file3
       - name: ephemeral
         emptyDir:
-          sizeLimit: "14Gi"
+          sizeLimit: "20Gi"
       enableServiceLinks: false
       imagePullSecrets:
       - name: regcred
-      timeoutSeconds: 600
+      timeoutSeconds: 900
