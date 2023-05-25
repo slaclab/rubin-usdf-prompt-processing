@@ -3,7 +3,7 @@ namespace: prompt-proto-service
 
 resources:
 - ns.yaml
-- prompt-proto-service-env.yaml
+- prompt-proto-service.yaml
 
 
 secretGenerator:
@@ -21,11 +21,12 @@ secretGenerator:
   - etc/.secrets/butler/username
   - etc/.secrets/butler/password
 
-- name: s3-credentials
+- name: s3-creds
   options:
     disableNameSuffixHash: true
   files:
-  - etc/.secrets/s3-buckets/s3_credentials_ini_file
+  - etc/.secrets/s3/access_key
+  - etc/.secrets/s3/secret_key
 
 - name: regcred
   options:
@@ -33,4 +34,5 @@ secretGenerator:
   files:
   - etc/.secrets/docker/.dockerconfigjson
   type: kubernetes.io/dockerconfigjson
+
 

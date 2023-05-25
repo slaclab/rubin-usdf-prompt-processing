@@ -52,6 +52,8 @@ spec:
           value: lsstdb1
         - name: USER_REGISTRY
           value: rubin
+        #- name: PGUSER
+        #  value: rubin
         - name: KAFKA_CLUSTER
           value: prompt-processing-kafka-bootstrap.kafka:9092
         - name: USER_REGISTRY
@@ -80,6 +82,8 @@ spec:
               key: secret_key
         - name: LOCAL_REPOS
           value: "/tmp-butler"
+        - name: SERVICE_LOG_LEVELS
+          value: lsst.resources=DEBUG
         volumeMounts:
           - mountPath: /tmp-butler
             name: ephemeral
