@@ -5,3 +5,4 @@ resources:
 - ns-strimzi.yaml
 - strimzi-operator.yaml
 - kafka-persistent-no-auth.yaml
+- kafdrop.yaml

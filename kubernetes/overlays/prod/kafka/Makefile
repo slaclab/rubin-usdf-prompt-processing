@@ -1,9 +1,9 @@
 
 NAMESPACE ?= kafka
 
-SINGULARITY_IMAGE ?= kafka_0.31.1-kafka-3.2.3.sif
+SINGULARITY_IMAGE ?= kafka_0.34.0-kafka-3.4.0.sif
 
-BOOTSTRAP_SERVER ?= 172.24.5.223:9094
+BOOTSTRAP_SERVER ?= 172.24.5.224:9094
 KAFKA_PROPERTIES ?= console.properties
 
 # the k8s secret object container the the user creds
@@ -47,11 +47,23 @@ producer: create-properties
 receiver: create-properties
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic $(KAFKA_TOPIC) --group $(KAFKA_GROUP) --consumer.config=$(KAFKA_PROPERTIES)
 
+consume-notify-messages:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic rubin-prompt-processing --group test-1 --from-beginning 
 
 run-dump:
 	kubectl kustomize .
 
 dump: run-dump
+
+kafdrop-notify:
+	echo -e "http://localhost:8001/api/v1/namespaces/kafka/services/http:kafdrop:9000/proxy/topic/rubin-prompt-processing-prod"
+	kubectl proxy
+
+set-notify-topic-partitions:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server  $(BOOTSTRAP_SERVER) --alter --topic rubin-prompt-processing-prod --partitions 200
+
+set-notify-topic-expiration:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-configs.sh --bootstrap-server $(BOOTSTRAP_SERVER) --alter --entity-type topics --entity-name rubin-prompt-processing-prod --add-config retention.ms=86400000
 
 run-apply:
 	kubectl apply -k .

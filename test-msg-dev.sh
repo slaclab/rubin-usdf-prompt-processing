@@ -10,7 +10,7 @@ curl --request POST \
 		"value": {
 			"private_efdStamp": 1674516757.7661333,
 			"private_kafkaStamp": 1674516794.7740011,
-			"salIndex": 2,
+			"salIndex": 999,
 			"private_revCode": "c9aab3df",
 			"private_sndStamp": 1674516794.7661333,
 			"private_rcvStamp": 1674516794.7662647,
