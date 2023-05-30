@@ -10,7 +10,7 @@ spec:
         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
         autoscaling.knative.dev/initial-scale: "3"
         autoscaling.knative.dev/min-scale: "3"
-        autoscaling.knative.dev/max-scale: "20"
+        autoscaling.knative.dev/max-scale: "100"
         autoscaling.knative.dev/target-utilization-percentage: "10"
         autoscaling.knative.dev/scale-down-delay: "15m"
         # Update this field if `make apply` by itself doesn't make a new revision.
@@ -109,6 +109,4 @@ spec:
         emptyDir:
           sizeLimit: "20Gi"
       enableServiceLinks: false
-      imagePullSecrets:
-      - name: regcred
       timeoutSeconds: 900

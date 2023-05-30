@@ -19,4 +19,13 @@ kubectl port-forward svc/prometheus-grafana 8080:80 -n prometheus
 
 ## View messages in topic
 
-kubectl -n kafka run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.33.2-kafka-3.4.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server prompt-processing-kafka-bootstrap:9092 --topic rubin-prompt-processing-prod --from-beginning
+
+'kubectl -n kafka run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.33.2-kafka-3.4.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server prompt-processing-kafka-bootstrap:9092 --topic rubin-prompt-processing-prod --from-beginning'
+
+
+# Determine Knatrive route health
+
+
+'kubectl get ingresses.networking.internal.knative.dev --all-namespaces'
+
+'kubectl get ksvc --all-namespaces'
