@@ -103,6 +103,7 @@ async def knative_request(
     knative_serving_url: str,
     headers: dict[str, str],
     body: bytes,
+    next_visit_group_id,
 ) -> None:
     """Makes knative http request.
 
@@ -118,13 +119,32 @@ async def knative_request(
         The next visit message body.
     """
     in_process_requests_gauge.inc()
-    r = await client.post(
+
+    result = await client.post(
         knative_serving_url,
         headers=headers,
         data=body,  # type:ignore
         timeout=None,
     )
-    logging.info(r)
+
+    logging.info(
+        f"group id {next_visit_group_id} for status code {result.status_code} for initial request {result.content}"
+    )
+
+    if result.status_code == 502 or result.status_code == 503:
+        logging.info(
+            f"retry after status code {result.status_code} for group id {next_visit_group_id}"
+        )
+        retry_result = await client.post(
+            knative_serving_url,
+            headers=headers,
+            data=body,  # type:ignore
+            timeout=None,
+        )
+        logging.info(
+            f"group id {next_visit_group_id} for retried request {retry_result.content}"
+        )
+
     in_process_requests_gauge.dec()
 
 
@@ -136,7 +156,9 @@ async def main() -> None:
     group_id = os.environ["CONSUMER_GROUP"]
     topic = os.environ["NEXT_VISIT_TOPIC"]
     kafka_schema_registry_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
-    knative_serving_url = os.environ["KNATIVE_SERVING_URL"]
+    latiss_knative_serving_url = os.environ["LATISS_KNATIVE_SERVING_URL"]
+    hsc_knative_serving_url = os.environ["HSC_KNATIVE_SERVING_URL"]
+    lsst_cam_knative_serving_url = os.environ["LSST_CAM_KNATIVE_SERVING_URL"]
     offset = os.environ["OFFSET"]
 
     # kafka auth
@@ -208,12 +230,7 @@ async def main() -> None:
 
             while True:  # run continously
                 async for msg in consumer:
-                    logging.info(
-                        f"Message value is {msg.value} at time ${msg.timestamp}"
-                    )
-                    logging.info(
-                        f"avro message value before deserialize is {msg.value}"
-                    )
+
                     next_visit_message_initial = await deserializer.deserialize(
                         data=msg.value
                     )
@@ -256,6 +273,7 @@ async def main() -> None:
                                     latiss_active_detectors,
                                 )
                             )
+                            knative_serving_url = latiss_knative_serving_url
                         # case "LSSTComCam":
                         #    fan_out_message_list = next_visit_message.add_detectors(
                         #        "LSSTComCam", next_visit_message, lsst_com_cam_active_detectors
@@ -269,6 +287,7 @@ async def main() -> None:
                                     lsst_cam_active_detectors,
                                 )
                             )
+                            knative_serving_url = lsst_cam_knative_serving_url
                         case 999:  # HSC
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -278,6 +297,7 @@ async def main() -> None:
                                     hsc_active_detectors,
                                 )
                             )
+                            knative_serving_url = hsc_knative_serving_url
                         case 59134:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -287,6 +307,7 @@ async def main() -> None:
                                     hsc_active_detectors_59134,
                                 )
                             )
+                            knative_serving_url = hsc_knative_serving_url
                         case 59142:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -296,6 +317,7 @@ async def main() -> None:
                                     hsc_active_detectors_59142,
                                 )
                             )
+                            knative_serving_url = hsc_knative_serving_url
                         case 59150:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -305,6 +327,7 @@ async def main() -> None:
                                     hsc_active_detectors_59150,
                                 )
                             )
+                            knative_serving_url = hsc_knative_serving_url
                         case 59160:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -314,6 +337,7 @@ async def main() -> None:
                                     hsc_active_detectors_59160,
                                 )
                             )
+                            knative_serving_url = hsc_knative_serving_url
                         case _:
                             raise Exception(
                                 f"no matching case for salIndex {next_visit_message_updated.salIndex} to add instrument value"
@@ -340,10 +364,10 @@ async def main() -> None:
                                     knative_serving_url,
                                     headers,
                                     body,
+                                    next_visit_message_updated.groupId,
                                 )
                             )
                             tasks.add(task)
-                            logging.info(task.result)
                             task.add_done_callback(tasks.discard)
 
                     except ValueError as e:
