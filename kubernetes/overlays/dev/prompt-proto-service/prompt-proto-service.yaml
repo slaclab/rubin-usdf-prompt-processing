@@ -23,6 +23,8 @@ spec:
         env:
         - name: RUBIN_INSTRUMENT
           value: HSC
+        - name: PIPELINES_CONFIG
+          value: (survey="SURVEY")=${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/ApPipe.yaml
         - name: SKYMAP
           value: hsc_rings_v1
         - name: PUBSUB_VERIFICATION_TOKEN
