@@ -22,6 +22,8 @@ spec:
         env:
         - name: RUBIN_INSTRUMENT
           value: {{ .Values.instrument.name }}
+        - name: PIPELINES_CONFIG
+          value: {{ .Values.instrument.pipelines }}
         - name: SKYMAP
           value: {{ .Values.instrument.skymap }}
         - name: PUBSUB_VERIFICATION_TOKEN
