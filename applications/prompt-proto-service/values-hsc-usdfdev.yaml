@@ -43,11 +43,6 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-s3CredVolumeMount: 
-  - mountPath: /app/s3/credentials
-    name: s3-credentials-file
-    subPath: credentials
-
 additionalVolumeMounts:
   - mountPath: /app/s3/credentials
     name: s3-credentials-file
