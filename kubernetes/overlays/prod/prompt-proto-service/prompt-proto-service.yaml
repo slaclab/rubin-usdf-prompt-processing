@@ -24,6 +24,8 @@ spec:
         env:
         - name: RUBIN_INSTRUMENT
           value: LATISS
+        - name: PIPELINES_CONFIG
+          value: (survey="AUXTEL_PHOTO_IMAGING")=${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/ApPipe.yaml
         - name: SKYMAP
           value: latiss_v1
         - name: PUBSUB_VERIFICATION_TOKEN
