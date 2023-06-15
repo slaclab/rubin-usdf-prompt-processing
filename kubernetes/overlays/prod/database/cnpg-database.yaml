@@ -1,0 +1,63 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: prompt-processing
+spec:
+#  backup:
+#    barmanObjectStore:
+#      destinationPath: s3://rubin-usdf-butler
+#      endpointURL: http://sdfk8s001.slac.stanford.edu:9000
+#      s3Credentials:
+#        accessKeyId:
+#          name: s3-creds
+#          key: ACCESS_KEY_ID
+#        secretAccessKey:
+#          name: s3-creds
+#          key: ACCESS_SECRET_KEY
+  instances: 2
+  primaryUpdateStrategy: unsupervised
+
+  bootstrap:
+    initdb:
+      database: lsst-devl
+      owner: rubin
+      secret:
+        name: usdf-prompt-processing-creds
+
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.4-7
+  inheritedMetadata:
+    annotations:
+      prometheus.io/scrape: 'true'
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+
+  postgresql:
+    parameters:
+      shared_buffers: 2GB
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+      max_connections: "1000"
+
+#      ldap:
+#        scheme: ldaps
+#        server: 'ldap-unix.slac.stanford.edu'
+#        # tls: true
+#        port: 636
+#        bindAsAuth:
+#          prefix: 'uid='
+#          suffix: ',ou=Accounts,dc=slac,dc=stanford,dc=edu'
+
+
+  resources:
+    requests:
+      memory: 16Gi
+      cpu: 8
+    limits:
+      memory: 32Gi
+      cpu: 16
+
+  storage:
+    storageClass: wekafs--sdf-k8s01
+    size: 500Gi
