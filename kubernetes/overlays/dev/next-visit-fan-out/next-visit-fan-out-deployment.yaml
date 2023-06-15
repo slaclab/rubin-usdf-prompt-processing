@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: next-visit-fan-out
+  namespace: next-visit-fan-out
   labels:
     app: next-visit-fan-out
 spec:
@@ -21,8 +22,14 @@ spec:
         - name: regcred
       containers:
         - name: nextvisit-start
-          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.60
+          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.70
           env:
+            - name: LATISS_KNATIVE_SERVING_URL
+              value: http://prompt-proto-service.prompt-proto-service/next-visit
+            - name: HSC_KNATIVE_SERVING_URL
+              value: http://prompt-proto-service.prompt-proto-service/next-visit
+            - name: LSST_CAM_KNATIVE_SERVING_URL
+              value: http://lsst-cam-prompt-proto-service.lsst-cam-prompt-proto-service/next-visit
             - name: DETECTOR_CONFIG_FILE
               value: detector.yaml
             - name: KAFKA_CLUSTER
@@ -47,8 +54,6 @@ spec:
                   name: kafka-sasl-prompt-prompt-processing
             - name: KAFKA_SCHEMA_REGISTRY_URL
               value: http://10.99.65.182:8081
-            - name: KNATIVE_SERVING_URL
-              value: http://prompt-proto-service.prompt-proto-service/next-visit
             - name: OFFSET
               value: latest
       volumes:
