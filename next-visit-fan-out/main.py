@@ -211,8 +211,24 @@ async def main() -> None:
     hsc_gauge = Gauge(
         "hsc_next_visit_messages", "next visit nessages with hsc as instrument"
     )
-    in_process_requests_gauge = Gauge(
-        "prompt_processing_in_process_requests", "In process requests for next visit"
+    hsc_in_process_requests_gauge = Gauge(
+        "hsc_prompt_processing_in_process_requests",
+        "hsc in process requests for next visit",
+    )
+
+    latiss_in_process_requests_gauge = Gauge(
+        "latiss_prompt_processing_in_process_requests",
+        "latiss in process requests for next visit",
+    )
+
+    lsstcam_in_process_requests_gauge = Gauge(
+        "lsstcam_prompt_processing_in_process_requests",
+        "lsstcam in process requests for next visit",
+    )
+
+    lsstcomcam_in_process_requests_gauge = Gauge(
+        "lsstcomcam_prompt_processing_in_process_requests",
+        "lsstcomcam in process requests for next visit",
     )
 
     await consumer.start()
@@ -274,6 +290,7 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = latiss_knative_serving_url
+                            in_process_requests_gauge = latiss_in_process_requests_gauge
                         # case "LSSTComCam":
                         #    fan_out_message_list = next_visit_message.add_detectors(
                         #        "LSSTComCam", next_visit_message, lsst_com_cam_active_detectors
@@ -288,6 +305,9 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = lsst_cam_knative_serving_url
+                            in_process_requests_gauge = (
+                                lsstcam_in_process_requests_gauge
+                            )
                         case 999:  # HSC
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -298,6 +318,7 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = hsc_knative_serving_url
+                            in_process_requests_gauge = hsc_in_process_requests_gauge
                         case 59134:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -308,6 +329,7 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = hsc_knative_serving_url
+                            in_process_requests_gauge = hsc_in_process_requests_gauge
                         case 59142:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -318,6 +340,7 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = hsc_knative_serving_url
+                            in_process_requests_gauge = hsc_in_process_requests_gauge
                         case 59150:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -328,6 +351,7 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = hsc_knative_serving_url
+                            in_process_requests_gauge = hsc_in_process_requests_gauge
                         case 59160:  # HSC upload.py test dataset
                             hsc_gauge.inc()
                             fan_out_message_list = (
@@ -338,6 +362,7 @@ async def main() -> None:
                                 )
                             )
                             knative_serving_url = hsc_knative_serving_url
+                            in_process_requests_gauge = hsc_in_process_requests_gauge
                         case _:
                             raise Exception(
                                 f"no matching case for salIndex {next_visit_message_updated.salIndex} to add instrument value"
