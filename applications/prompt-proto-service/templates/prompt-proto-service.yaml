@@ -16,7 +16,7 @@ spec:
     spec:
       containerConcurrency: {{ .Values.containerConcurrency }}
       containers:
-      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-38752-latest
+      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
         imagePullPolicy: Always
         name: user-container
         env:
