@@ -16,12 +16,14 @@ spec:
     spec:
       containerConcurrency: {{ .Values.containerConcurrency }}
       containers:
-      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:DM-38752-latest
+      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
         imagePullPolicy: Always
         name: user-container
         env:
         - name: RUBIN_INSTRUMENT
           value: {{ .Values.instrument.name }}
+        - name: PIPELINES_CONFIG
+          value: {{ .Values.instrument.pipelines }}
         - name: SKYMAP
           value: {{ .Values.instrument.skymap }}
         - name: PUBSUB_VERIFICATION_TOKEN

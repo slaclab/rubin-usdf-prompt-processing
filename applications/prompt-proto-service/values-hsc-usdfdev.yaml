@@ -5,6 +5,7 @@
 
 instrument:
   name: HSC
+  pipelines: (survey="SURVEY")=${PROMPT_PROTOTYPE_DIR}/pipelines/HSC/ApPipe.yaml
   skymap: hsc_rings_v1
   calibRepo: s3://rubin-pp-users/central_repo/
 

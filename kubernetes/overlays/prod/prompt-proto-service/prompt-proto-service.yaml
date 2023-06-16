@@ -25,7 +25,14 @@ spec:
         - name: RUBIN_INSTRUMENT
           value: LATISS
         - name: PIPELINES_CONFIG
-          value: (survey="AUXTEL_PHOTO_IMAGING")=${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/ApPipe.yaml
+          value: >
+            (survey="AUXTEL_PHOTO_IMAGING")=${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/ApPipe.yaml
+            (survey="spec")=None
+            (survey="spec_with_rotation")=None
+            (survey="spec_bright")=None
+            (survey="spec_bright_with_rotation")=None
+            (survey="spec_pole")=None
+            (survey="spec_pole_with_rotation")=None
         - name: SKYMAP
           value: latiss_v1
         - name: PUBSUB_VERIFICATION_TOKEN
