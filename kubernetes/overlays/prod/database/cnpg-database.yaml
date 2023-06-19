@@ -40,16 +40,6 @@ spec:
       pg_stat_statements.track: all
       max_connections: "1000"
 
-#      ldap:
-#        scheme: ldaps
-#        server: 'ldap-unix.slac.stanford.edu'
-#        # tls: true
-#        port: 636
-#        bindAsAuth:
-#          prefix: 'uid='
-#          suffix: ',ou=Accounts,dc=slac,dc=stanford,dc=edu'
-
-
   resources:
     requests:
       memory: 16Gi
