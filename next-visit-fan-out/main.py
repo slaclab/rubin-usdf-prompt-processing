@@ -128,7 +128,7 @@ async def knative_request(
     )
 
     logging.info(
-        f"group id {next_visit_group_id} for status code {result.status_code} for initial request {result.content}"
+        f"group id {next_visit_group_id} status code {result.status_code} for initial request {result.content}"
     )
 
     if result.status_code == 502 or result.status_code == 503:
@@ -142,7 +142,7 @@ async def knative_request(
             timeout=None,
         )
         logging.info(
-            f"group id {next_visit_group_id} for retried request {retry_result.content}"
+            f"group id {next_visit_group_id} retried request {retry_result.content}"
         )
 
     in_process_requests_gauge.dec()
@@ -155,11 +155,11 @@ async def main() -> None:
     kafka_cluster = os.environ["KAFKA_CLUSTER"]
     group_id = os.environ["CONSUMER_GROUP"]
     topic = os.environ["NEXT_VISIT_TOPIC"]
+    offset = os.environ["OFFSET"]
     kafka_schema_registry_url = os.environ["KAFKA_SCHEMA_REGISTRY_URL"]
     latiss_knative_serving_url = os.environ["LATISS_KNATIVE_SERVING_URL"]
-    hsc_knative_serving_url = os.environ["HSC_KNATIVE_SERVING_URL"]
     lsst_cam_knative_serving_url = os.environ["LSST_CAM_KNATIVE_SERVING_URL"]
-    offset = os.environ["OFFSET"]
+    hsc_knative_serving_url = os.environ["HSC_KNATIVE_SERVING_URL"]
 
     # kafka auth
     sasl_username = os.environ["SASL_USERNAME"]
