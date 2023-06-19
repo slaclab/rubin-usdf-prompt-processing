@@ -92,4 +92,6 @@ test-kafka/
 test-kafka-source/
 ceph-testing/
 backups/
+test/
+test-knative/file-test
 
