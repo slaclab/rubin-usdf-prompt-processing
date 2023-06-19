@@ -1,7 +1,7 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-prompt-proto-service
+  name: prompt-proto-service
   namespace: {{ .Values.namespace }}
 spec:
   template:
@@ -16,8 +16,8 @@ spec:
     spec:
       containerConcurrency: {{ .Values.containerConcurrency }}
       containers:
-      - image: us-central1-docker.pkg.dev/prompt-proto/prompt/prompt-proto-service:latest
-        imagePullPolicy: Always
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         name: user-container
         env:
         - name: RUBIN_INSTRUMENT
@@ -66,8 +66,22 @@ spec:
               key: password
         - name: S3_ENDPOINT_URL
           value: {{ .Values.s3.endpointUrl }}
+        {{- if .Values.s3.auth_env }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: access_key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: s3-creds
+              key: secret_key
+        {{- end }}
+        {{- if .Values.s3.cred_file_auth }}
         - name: AWS_SHARED_CREDENTIALS_FILE
           value: /app/s3/credentials
+        {{- end }}
         - name: LOCAL_REPOS
           value: "/tmp-butler"
         volumeMounts:
@@ -87,11 +101,13 @@ spec:
           limits:
             ephemeral-storage: {{ .Values.knative.ephemeralStorageLimit }}
       volumes:
-      - name: s3-credentials-file
-        secret:
-          secretName: s3-credentials-file
       - name: ephemeral
         emptyDir:
           sizeLimit: {{ .Values.knative.ephemeralStorageLimit }}
+      {{- if .Values.s3.cred_file_auth }}
+      - name: s3-credentials-file
+        secret:
+          secretName: s3-credentials-file
+      {{- end }}
       enableServiceLinks: false
       timeoutSeconds: {{ .Values.knative.timeout }}
