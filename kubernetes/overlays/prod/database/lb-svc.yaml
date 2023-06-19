@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/address-pool: sdf-services
+    metallb.universe.tf/allow-shared-ip: usdf-prompt-processing
+  name: prompt-processing-pooler-rw
+  namespace: database
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: pgbouncer
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    cnpg.io/poolerName: prompt-processing-pooler-rw
+  sessionAffinity: None
+  type: LoadBalancer
