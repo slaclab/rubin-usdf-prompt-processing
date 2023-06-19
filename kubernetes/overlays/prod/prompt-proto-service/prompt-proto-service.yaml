@@ -47,7 +47,7 @@ spec:
           value: /app/butler
         - name: IP_APDB
           # Need explicit port for make_pgpass.py
-          value: usdf-prompt-processing-dev.slac.stanford.edu:5432
+          value: usdf-prompt-processing.slac.stanford.edu:5432
         - name: DB_APDB
           value: lsst-devl
         - name: USER_APDB
