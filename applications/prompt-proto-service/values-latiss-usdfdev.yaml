@@ -1,4 +1,4 @@
-# Default values for hsc prompt-proto-service.
+# Default values for latiss prompt-proto-service.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -10,15 +10,15 @@ image:
   tag: AuxTel20230524-w_2023_20
 
 instrument:
-  name: HSC
-  pipelines: (survey="SURVEY")=${PROMPT_PROTOTYPE_DIR}/pipelines/HSC/ApPipe.yaml
-  skymap: hsc_rings_v1
-  calibRepo: s3://rubin-pp-users/central_repo/
+  name: LATISS
+  pipelines:
+  skymap: latiss_v1
+  calibRepo: /app/butler
 
 s3:
   imageBucket: rubin-pp
   endpointUrl: https://s3dfrgw.slac.stanford.edu
-  cred_file_auth: true
+  auth_env: true
 
 imageNotifications:
   kafkaClusterAddress: prompt-processing-kafka-bootstrap.kafka:9092
@@ -32,9 +32,9 @@ apdb:
   namespace: pp_apdb
 
 registry:
-  ip: usdf-prompt-processing-dev.slac.stanford.edu:5432
-  db: ppcentralbutler
-  user: pp
+  ip: usdf-butler.slac.stanford.edu:5432
+  db: lsstdb1
+  user: rubin
 
 knative:
   minScale: 3
@@ -43,9 +43,4 @@ knative:
   ephemeralStorageLimit: "20Gi"
   timeout: 900
 
-namespace: prompt-proto-service-hsc
-
-additionalVolumeMounts:
-  - mountPath: /app/s3/credentials
-    name: s3-credentials-file
-    subPath: credentials
+namespace: prompt-proto-service-latiss
