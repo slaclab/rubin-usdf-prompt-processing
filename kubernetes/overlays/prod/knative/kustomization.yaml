@@ -8,3 +8,5 @@ resources:
 - knative-config-defaults.yaml
 - knative-config-features.yaml
 - knative-config-gc.yaml
+- knative-config-logging.yaml
+- knative-config-observability.yaml
