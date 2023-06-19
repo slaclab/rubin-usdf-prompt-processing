@@ -5,10 +5,10 @@ SINGULARITY_IMAGE ?= kafka_0.31.1-kafka-3.2.3.sif
 
 BOOTSTRAP_SERVER ?= prompt-processing-kafka-bootstrap:9092
 
-SECRET_PATH ?= secret/rubin/usdf-prompt-processing-dev/postgres
+SECRET_PATH ?= secret/rubin/usdf-prompt-processing/postgres
 BUTLER_SECRET_PATH ?= secret/rubin/usdf-butler/postgres
 S3_SECRET_PATH ?= secret/rubin/embargo/read/rubin-summit-users
-DOCKER_SECRET_PATH ?= secret/rubin/usdf-prompt-processing/docker
+
 
 get-secrets-from-vault:
 	mkdir -p etc/.secrets/
