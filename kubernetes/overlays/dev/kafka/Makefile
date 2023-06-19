@@ -46,14 +46,22 @@ producer: create-properties
 
 receiver: create-properties
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic $(KAFKA_TOPIC) --group $(KAFKA_GROUP) --consumer.config=$(KAFKA_PROPERTIES)
-	singularity exec kafka_0.34.0-kafka-3.4.0.sif /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server 172.24.5.206:9094 --topic rubin-prompt-processing --group test-1 --from-beginning 
 
+consume-notify-messages:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic rubin-prompt-processing --group test-1 --from-beginning 
 
 list-topics:
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server $(BOOTSTRAP_SERVER) --list
-	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server $(BOOTSTRAP_SERVER) --alter --topic rubin-prompy-processing --partitions 200
-	singularity exec kafka_0.34.0-kafka-3.4.0.sif /opt/kafka/bin/kafka-topics.sh --bootstrap-server 172.24.5.206:9094 --alter --topic rubin-prompt-processing --partitions 200
 
+kafdrop-notify:
+	echo -e "http://localhost:8001/api/v1/namespaces/kafka/services/http:kafdrop:9000/proxy/topic/rubin-prompt-processing-prod"
+	kubectl proxy
+
+set-notify-topic-partitions:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-topics.sh --bootstrap-server  $(BOOTSTRAP_SERVER) --alter --topic rubin-prompt-processing-prod --partitions 200
+
+set-notify-topic-expiration:
+	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-configs.sh --bootstrap-server $(BOOTSTRAP_SERVER) --alter --entity-type topics --entity-name rubin-prompt-processing-prod --add-config retention.ms=86400000
 
 run-dump:
 	kubectl kustomize .
