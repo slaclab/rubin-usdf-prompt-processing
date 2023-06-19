@@ -4,3 +4,11 @@ resources:
 - ns.yaml
 - cnpg-database.yaml
 - cnpg-pooler.yaml
+
+secretGenerator:
+- name: usdf-prompt-processing-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - etc/.secrets/username
+  - etc/.secrets/password

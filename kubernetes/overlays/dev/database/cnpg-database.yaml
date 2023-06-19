@@ -38,7 +38,7 @@ spec:
       shared_buffers: 2GB
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
-      max_connections: "100"
+      max_connections: "300"
 
 #      ldap:
 #        scheme: ldaps
@@ -60,4 +60,5 @@ spec:
 
   storage:
     storageClass: wekafs--sdf-k8s01
-    size: 250Gi
+    size: 500Gi
+    resizeInUseVolumes: False
