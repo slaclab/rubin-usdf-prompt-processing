@@ -3,17 +3,18 @@ kind: Cluster
 metadata:
   name: prompt-processing
 spec:
-#  backup:
-#    barmanObjectStore:
-#      destinationPath: s3://rubin-usdf-butler
-#      endpointURL: http://sdfk8s001.slac.stanford.edu:9000
-#      s3Credentials:
-#        accessKeyId:
-#          name: s3-creds
-#          key: ACCESS_KEY_ID
-#        secretAccessKey:
-#          name: s3-creds
-#          key: ACCESS_SECRET_KEY
+  backup:
+    retentionPolicy: "15d"
+    barmanObjectStore:
+      destinationPath: s3://rubin-usdf-apdb-dev
+      endpointURL: https://s3dfrgw.slac.stanford.edu
+      s3Credentials:
+        accessKeyId:
+          name: s3-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: s3-creds
+          key: ACCESS_SECRET_KEY
   instances: 1
   primaryUpdateStrategy: unsupervised
 
@@ -40,16 +41,6 @@ spec:
       pg_stat_statements.track: all
       max_connections: "300"
 
-#      ldap:
-#        scheme: ldaps
-#        server: 'ldap-unix.slac.stanford.edu'
-#        # tls: true
-#        port: 636
-#        bindAsAuth:
-#          prefix: 'uid='
-#          suffix: ',ou=Accounts,dc=slac,dc=stanford,dc=edu'
-
-
   resources:
     requests:
       memory: 16Gi
@@ -60,5 +51,5 @@ spec:
 
   storage:
     storageClass: wekafs--sdf-k8s01
-    size: 500Gi
+    size: 350Gi
     resizeInUseVolumes: False
