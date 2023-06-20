@@ -1,14 +1,10 @@
-SECRET_PATH ?= secret/rubin/usdf-prompt-processing-dev/next-visit-fan-out
-BUTLER_SECRET_PATH ?= secret/rubin/usdf-butler/postgres
+SECRET_PATH ?= secret/rubin/usdf-prompt-processing-dev/postgres
 S3_SECRET_PATH ?= secret/rubin/usdf-prompt-processing-dev/s3-buckets
-DOCKER_SECRET_PATH ?= secret/rubin/usdf-prompt-processing-dev/docker
 
 get-secrets-from-vault:
 	mkdir -p etc/.secrets/
-	set -e; for i in kafka_pp_sasl_password kafka_pp_sasl_username; do vault kv get --field=$$i $(SECRET_PATH) > etc/.secrets/$$i ; done
-	
-	mkdir -p etc/.secrets/docker/
-	set -e; for i in .dockerconfigjson; do vault kv get --field=$$i $(DOCKER_SECRET_PATH) > etc/.secrets/docker/$$i ; done
+	set -e; for i in password username; do vault kv get --field=$$i $(SECRET_PATH) > etc/.secrets/$$i ; done
+	set -e; for i in access_key secret_key; do vault kv get --field=$$i $(S3_SECRET_PATH) > etc/.secrets/$$i ; done
 
 clean-secrets:
 	rm -rf etc/.secrets/
