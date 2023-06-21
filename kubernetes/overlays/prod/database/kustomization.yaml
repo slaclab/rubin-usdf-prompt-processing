@@ -5,6 +5,7 @@ resources:
 - cnpg-database.yaml
 - cnpg-pooler.yaml
 - lb-svc.yaml
+- backup.yaml
 
 secretGenerator:
 - name: usdf-prompt-processing-creds
@@ -13,3 +14,9 @@ secretGenerator:
   files:
   - etc/.secrets/username
   - etc/.secrets/password
+- name: s3-creds
+  options:
+    disableNameSuffixHash: true
+  files:
+  - ACCESS_KEY_ID=etc/.secrets/access_key
+  - ACCESS_SECRET_KEY=etc/.secrets/secret_key
