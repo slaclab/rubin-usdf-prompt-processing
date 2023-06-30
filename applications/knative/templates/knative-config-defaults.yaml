@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  max-revision-timeout-seconds: {{ .Values.defaults.maxRevisionTimeoutSeconds }}
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: knative-serving
+  name: config-defaults
+  namespace: knative-serving
