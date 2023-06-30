@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  logging.enable-request-log: {{ .Values.logging.requestRequestLog }}
+  logging.enable-probe-request-log: {{ .Values.logging.probeRequestLog }}
+
+
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: observability
+    app.kubernetes.io/name: knative-serving
+  name: config-observability
+  namespace: knative-serving
