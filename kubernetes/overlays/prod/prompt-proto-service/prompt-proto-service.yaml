@@ -109,13 +109,13 @@ spec:
           requests:
             ephemeral-storage: "8Gi"
           limits:
-            ephemeral-storage: "20Gi"
+            ephemeral-storage: "30Gi"
       volumes:
       - name: central-repo-file
         secret:
           secretName: central-repo-file3
       - name: ephemeral
         emptyDir:
-          sizeLimit: "20Gi"
+          sizeLimit: "30Gi"
       enableServiceLinks: false
       timeoutSeconds: 900
