@@ -16,7 +16,7 @@ namePrefix:
 images:
 - name: ghcr.io/lsst-dm/prompt-proto-service:TAG
   newName: ghcr.io/lsst-dm/prompt-proto-service
-  newTag: AuxTel20230509-d_2023_05_01
+  newTag: d_2023_07_11
 
 secretGenerator:
 
