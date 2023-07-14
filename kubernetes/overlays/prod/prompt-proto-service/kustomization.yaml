@@ -27,12 +27,3 @@ secretGenerator:
   files:
   - etc/.secrets/s3/access_key
   - etc/.secrets/s3/secret_key
-
-- name: regcred
-  options:
-    disableNameSuffixHash: true
-  files:
-  - etc/.secrets/docker/.dockerconfigjson
-  type: kubernetes.io/dockerconfigjson
-
-
