@@ -20,9 +20,6 @@ get-secrets-from-vault:
 	mkdir -p etc/.secrets/s3/
 	set -e; for i in access_key secret_key; do vault kv get --field=$$i $(S3_SECRET_PATH) > etc/.secrets/s3/$$i ; done
 
-	mkdir -p etc/.secrets/docker/
-	set -e; for i in .dockerconfigjson; do vault kv get --field=$$i $(DOCKER_SECRET_PATH) > etc/.secrets/docker/$$i ; done
-
 clean-secrets:
 	rm -rf etc/.secrets/
 
