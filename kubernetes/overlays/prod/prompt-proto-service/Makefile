@@ -20,16 +20,13 @@ get-secrets-from-vault:
 	mkdir -p etc/.secrets/s3/
 	set -e; for i in access_key secret_key; do vault kv get --field=$$i $(S3_SECRET_PATH) > etc/.secrets/s3/$$i ; done
 
-	mkdir -p etc/.secrets/docker/
-	set -e; for i in .dockerconfigjson; do vault kv get --field=$$i $(DOCKER_SECRET_PATH) > etc/.secrets/docker/$$i ; done
-
 clean-secrets:
 	rm -rf etc/.secrets/
 
 create-singularity:
 	singularity pull -F docker://quay.io/strimzi/kafka:0.31.1-kafka-3.2.3
 
-producer: 
+producer:
 	singularity exec $(SINGULARITY_IMAGE) /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server $(BOOTSTRAP_SERVER) --topic $(KAFKA_TOPIC)
 
 run-kustomize:
