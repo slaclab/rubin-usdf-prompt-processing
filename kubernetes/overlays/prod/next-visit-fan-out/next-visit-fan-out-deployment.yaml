@@ -50,7 +50,7 @@ spec:
                   key: kafka_pp_sasl_password
                   name: kafka-sasl-prompt-prompt-processing
             - name: KAFKA_SCHEMA_REGISTRY_URL
-              value: http://10.101.114.201:8081
+              value: http://10.106.41.77:8081
             - name: OFFSET
               value: latest
       volumes:
