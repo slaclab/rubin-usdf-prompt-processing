@@ -33,6 +33,7 @@ spec:
             (survey="spec_bright_with_rotation")=None
             (survey="spec_pole")=None
             (survey="spec_pole_with_rotation")=None
+            (survey="")=None
         - name: SKYMAP
           value: latiss_v1
         - name: PUBSUB_VERIFICATION_TOKEN
