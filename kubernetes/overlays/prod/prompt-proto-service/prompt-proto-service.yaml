@@ -26,7 +26,9 @@ spec:
           value: LATISS
         - name: PIPELINES_CONFIG
           value: >
-            (survey="AUXTEL_PHOTO_IMAGING")=[${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/ApPipe.yaml]
+            (survey="AUXTEL_PHOTO_IMAGING")=[${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/ApPipe.yaml,
+                                             ${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/SingleFrame.yaml,
+                                             ${PROMPT_PROTOTYPE_DIR}/pipelines/${RUBIN_INSTRUMENT}/Isr.yaml]
             (survey="spec")=[]
             (survey="spec_with_rotation")=[]
             (survey="spec_bright")=[]
