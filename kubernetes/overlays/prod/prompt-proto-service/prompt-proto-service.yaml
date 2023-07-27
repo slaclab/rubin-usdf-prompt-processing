@@ -18,7 +18,7 @@ spec:
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:d_2023_07_11
+      - image: ghcr.io/lsst-dm/prompt-proto-service:w_2023_30
         imagePullPolicy: Always
         name: user-container
         env:
