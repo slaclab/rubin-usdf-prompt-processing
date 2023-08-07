@@ -68,6 +68,7 @@ class NextVisitModel(AvroModel):
     dome: int
     duration: int
     totalCheckpoints: int
+    private_sndStamp: float
 
 
 def acked(err, msg):
@@ -106,6 +107,7 @@ async def send(loop, total_events=3):
             dome=random.randint(1, 3),
             duration=random.randint(1, 3),
             totalCheckpoints=random.randint(1, 3),
+            private_sndStamp=random.gauss(1_674_516_794.0, 2.5e6),
         )
 
         # create the message
