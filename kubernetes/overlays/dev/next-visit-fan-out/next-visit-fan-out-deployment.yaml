@@ -18,11 +18,10 @@ spec:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '8000'
     spec:
-      imagePullSecrets:
-        - name: regcred
       containers:
         - name: nextvisit-start
-          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.70
+          image: ghcr.io/lsst-dm/next_visit_fan_out:main
+          imagePullPolicy: Always
           env:
             - name: LATISS_KNATIVE_SERVING_URL
               value: http://prompt-proto-service.prompt-proto-service/next-visit
