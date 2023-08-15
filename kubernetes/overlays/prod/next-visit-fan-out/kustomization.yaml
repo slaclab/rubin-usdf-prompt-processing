@@ -13,11 +13,3 @@ secretGenerator:
   files:
   - etc/.secrets/kafka_pp_sasl_username
   - etc/.secrets/kafka_pp_sasl_password
-
-- name: regcred
-  options:
-    disableNameSuffixHash: true
-  files:
-  - etc/.secrets/docker/.dockerconfigjson
-  type: kubernetes.io/dockerconfigjson
-
