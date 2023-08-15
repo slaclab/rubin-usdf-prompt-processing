@@ -15,11 +15,10 @@ spec:
       labels:
         app: next-visit-fan-out
     spec:
-      imagePullSecrets:
-        - name: regcred
       containers:
         - name: nextvisit-start
-          image: us-central1-docker.pkg.dev/prompt-proto/prompt/nextvisit-fanout:v1.70
+          image: ghcr.io/lsst-dm/next_visit_fan_out:main
+          imagePullPolicy: Always
           env:
             - name: LATISS_KNATIVE_SERVING_URL
               value: http://prompt-proto-service.prompt-proto-service/next-visit
@@ -32,7 +31,7 @@ spec:
             - name: KAFKA_CLUSTER
               value: 10.104.21.0:9094
             - name: CONSUMER_GROUP
-              value: test-group-1
+              value: next-visit-fan-out-1
             - name: NEXT_VISIT_TOPIC
               value: lsst.sal.ScriptQueue.logevent_nextVisit
             - name: SASL_MECHANISM
