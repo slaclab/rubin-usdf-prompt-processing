@@ -8,9 +8,10 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
-        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/min-scale: "3"
         autoscaling.knative.dev/max-scale: "100"
-        autoscaling.knative.dev/target-utilization-percentage: "80"
+        autoscaling.knative.dev/target-utilization-percentage: "60"
+        autoscaling.knative.dev/target-burst-capacity: "-1"
         # Update this field if `make apply` by itself doesn't make a new revision.
         revision: "32"
       creationTimestamp: null
@@ -100,3 +101,5 @@ spec:
       imagePullSecrets:
       - name: regcred
       timeoutSeconds: 900
+      idleTimeoutSeconds: 900
+      responseStartTimeoutSeconds: 900
