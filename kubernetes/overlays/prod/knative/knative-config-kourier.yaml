@@ -56,9 +56,6 @@ metadata:
   labels:
     app.kubernetes.io/component: net-kourier
     app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: 1.8.1
     networking.knative.dev/ingress-provider: kourier
   name: config-kourier
   namespace: knative-serving
-  resourceVersion: "219288695"
-  uid: cf92a5b5-60b0-4954-8fb6-b040b77f7245
