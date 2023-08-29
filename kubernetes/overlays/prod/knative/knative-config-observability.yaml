@@ -83,8 +83,7 @@ data:
     profiling.enable: "false"
   logging.enable-request-log: "true"
   logging.enable-probe-request-log: "true"
-
-
+  logging.enable-var-log-collection: "false"
 kind: ConfigMap
 metadata:
   labels:
