@@ -11,14 +11,15 @@ spec:
         autoscaling.knative.dev/initial-scale: "3"
         autoscaling.knative.dev/min-scale: "3"
         autoscaling.knative.dev/max-scale: "100"
-        autoscaling.knative.dev/target-utilization-percentage: "10"
-        autoscaling.knative.dev/scale-down-delay: "15m"
+        autoscaling.knative.dev/target-utilization-percentage: "60"
+        #autoscaling.knative.dev/scale-down-delay: "15m"
+        autoscaling.knative.dev/target-burst-capacity: "-1"
         # Update this field if `make apply` by itself doesn't make a new revision.
         revision: "34"
     spec:
       containerConcurrency: 1
       containers:
-      - image: ghcr.io/lsst-dm/prompt-proto-service:w_2023_32
+      - image: ghcr.io/lsst-dm/prompt-proto-service:w_2023_34
         imagePullPolicy: Always
         name: user-container
         env:
@@ -125,3 +126,5 @@ spec:
           sizeLimit: "30Gi"
       enableServiceLinks: false
       timeoutSeconds: 900
+      idleTimeoutSeconds: 900
+      responseStartTimeoutSeconds: 900
