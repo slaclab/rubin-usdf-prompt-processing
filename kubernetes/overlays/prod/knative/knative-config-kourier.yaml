@@ -1,0 +1,64 @@
+apiVersion: v1
+data:
+  _example: |
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+
+    # Specifies whether requests reaching the Kourier gateway
+    # in the context of services should be logged. Readiness
+    # probes etc. must be configured via the bootstrap config.
+    enable-service-access-logging: "true"
+
+    # Specifies whether to use proxy-protocol in order to safely
+    # transport connection information such as a client's address
+    # across multiple layers of TCP proxies.
+    # NOTE THAT THIS IS AN EXPERIMENTAL / ALPHA FEATURE
+    enable-proxy-protocol: "false"
+
+    # The server certificates to serve the internal TLS traffic for Kourier Gateway.
+    # It is specified by the secret name in controller namespace, which has
+    # the "tls.crt" and "tls.key" data field.
+    # Use an empty value to disable the feature (default).
+    #
+    # NOTE: This flag is in an alpha state and is mostly here to enable internal testing
+    #       for now. Use with caution.
+    cluster-cert-secret: ""
+
+    # Specifies the amount of time that Kourier waits for the incoming requests.
+    # The default, 0s, imposes no timeout at all.
+    stream-idle-timeout: "0s"
+
+    # Control the desired level of incoming traffic isolation.
+    #
+    # When set to an empty value (default), all incoming traffic flows through
+    # a shared ingress and listeners.
+    #
+    # When set to "port", incoming traffic is isolated by using different
+    # listener ports.
+    #
+    # NOTE: This flag is in an alpha state.
+    traffic-isolation: ""
+  enable-service-access-logging: "true"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: net-kourier
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: 1.8.1
+    networking.knative.dev/ingress-provider: kourier
+  name: config-kourier
+  namespace: knative-serving
+  resourceVersion: "219288695"
+  uid: cf92a5b5-60b0-4954-8fb6-b040b77f7245
