@@ -19,8 +19,8 @@ spec:
         prometheus.io/port: '8000'
     spec:
       containers:
-        - name: nextvisit-start
-          image: ghcr.io/lsst-dm/next_visit_fan_out:main
+        - name: next-visit-fan-out
+          image: ghcr.io/lsst-dm/next_visit_fan_out:v1.0.1
           imagePullPolicy: Always
           env:
             - name: LATISS_KNATIVE_SERVING_URL
