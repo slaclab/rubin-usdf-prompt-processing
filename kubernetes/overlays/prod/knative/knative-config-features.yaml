@@ -171,6 +171,7 @@ data:
     queueproxy.mount-podinfo: "disabled"
   kubernetes.podspec-persistent-volume-claim: enabled
   kubernetes.podspec-volumes-emptydir: enabled
+  kubernetes.podspec-init-containers: enabled
 kind: ConfigMap
 metadata:
   labels:
