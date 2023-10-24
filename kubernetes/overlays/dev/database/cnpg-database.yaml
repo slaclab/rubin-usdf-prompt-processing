@@ -25,7 +25,7 @@ spec:
       secret:
         name: usdf-prompt-processing-creds
 
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.4-7
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:14.4-7
   inheritedMetadata:
     annotations:
       prometheus.io/scrape: 'true'
