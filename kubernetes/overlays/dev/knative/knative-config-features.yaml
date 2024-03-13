@@ -173,6 +173,7 @@ data:
   kubernetes.podspec-volumes-emptydir: enabled
   kubernetes.podspec-init-containers: enabled
   kubernetes.podspec-affinity: enabled
+  kubernetes.podspec-tolerations: enabled
 kind: ConfigMap
 metadata:
   labels:
