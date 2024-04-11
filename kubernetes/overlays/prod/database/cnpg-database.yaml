@@ -40,6 +40,10 @@ spec:
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
       max_connections: "1000"
+      log_disconnections: "on"
+      log_duration: "on"
+      log_statement: all
+      log_min_duration_statement: 250ms
 
   resources:
     requests:
