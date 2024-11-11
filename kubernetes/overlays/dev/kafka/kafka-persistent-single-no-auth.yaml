@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  name: prompt-processing
+  name: prompt-processing2
   namespace: kafka
 spec:
   kafkaExporter:
@@ -13,19 +13,19 @@ spec:
       deployment:
         metadata:
           annotations:
-            prometheus.io/scrape: 'true'      
+            prometheus.io/scrape: "true"
       pod:
         metadata:
           annotations:
-            prometheus.io/scrape: 'true'
+            prometheus.io/scrape: "true"
   kafka:
     template:
       pod:
         metadata:
           annotations:
-            prometheus.io/scrape: 'true'
-    version: 3.4.0
-    replicas: 1
+            prometheus.io/scrape: "true"
+    version: 3.7.1
+    replicas: 3
     listeners:
       - name: plain
         port: 9092
@@ -41,14 +41,22 @@ spec:
         type: loadbalancer
         configuration:
           bootstrap:
+            loadBalancerIP: 172.24.5.206
             annotations:
               metallb.universe.tf/address-pool: sdf-services
           brokers:
-          - broker: 0
-            annotations:
-              metallb.universe.tf/address-pool: sdf-services
+            - broker: 0
+              loadBalancerIP: 172.24.5.205
+              annotations:
+                metallb.universe.tf/address-pool: sdf-services
+            - broker: 1
+              annotations:
+                metallb.universe.tf/address-pool: sdf-services
+            - broker: 2
+              annotations:
+                metallb.universe.tf/address-pool: sdf-services
     config:
-      offsets.topic.replication.factor: 1
+      offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 1
       transaction.state.log.min.isr: 1
       default.replication.factor: 1
@@ -57,10 +65,10 @@ spec:
     storage:
       type: jbod
       volumes:
-      - id: 0
-        type: persistent-claim
-        size: 100Gi
-        deleteClaim: false
+        - id: 0
+          type: persistent-claim
+          size: 100Gi
+          deleteClaim: false
     metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
@@ -68,7 +76,7 @@ spec:
           name: kafka-metrics
           key: kafka-metrics-config.yml
   zookeeper:
-    replicas: 1
+    replicas: 3
     storage:
       type: persistent-claim
       size: 100Gi
