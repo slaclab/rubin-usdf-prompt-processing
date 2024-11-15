@@ -1,3 +1,2 @@
-
 resources:
-- cnpg-operator-1.20.0.yaml
+  - cnpg-operator-1.24.1.yaml
