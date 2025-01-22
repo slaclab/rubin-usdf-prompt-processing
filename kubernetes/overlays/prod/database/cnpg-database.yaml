@@ -1,7 +1,8 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: prompt-processing
+  name: prompt-processing2
+  namespace: database
 spec:
   backup:
     retentionPolicy: "15d"
@@ -15,44 +16,73 @@ spec:
         secretAccessKey:
           name: s3-creds
           key: ACCESS_SECRET_KEY
-  instances: 2
-  primaryUpdateStrategy: unsupervised
-
-  bootstrap:
-    initdb:
-      database: lsst-devl
-      owner: rubin
-      secret:
-        name: usdf-prompt-processing-creds
-
+  affinity:
+    podAntiAffinityType: preferred
+    topologyKey: ""
+  enableSuperuserAccess: true
+  failoverDelay: 0
   imageName: ghcr.io/cloudnative-pg/postgresql:14.4-7
   inheritedMetadata:
     annotations:
-      prometheus.io/scrape: 'true'
-
+      prometheus.io/scrape: "true"
+  instances: 2
+  logLevel: info
+  maxSyncReplicas: 0
+  minSyncReplicas: 0
+  monitoring:
+    customQueriesConfigMap:
+    - key: queries
+      name: cnpg-default-monitoring
+    disableDefaultQueries: false
+    enablePodMonitor: false
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true
-
+  postgresGID: 26
+  postgresUID: 26
   postgresql:
     parameters:
-      shared_buffers: 2GB
-      pg_stat_statements.max: "10000"
-      pg_stat_statements.track: all
-      max_connections: "1000"
+      archive_mode: "on"
+      archive_timeout: 5min
+      dynamic_shared_memory_type: posix
+      log_destination: csvlog
+      log_directory: /controller/log
       log_disconnections: "on"
       log_duration: "on"
-      log_statement: all
+      log_filename: postgres
       log_min_duration_statement: 250ms
-
+      log_rotation_age: "0"
+      log_rotation_size: "0"
+      log_statement: all
+      log_truncate_on_rotation: "false"
+      logging_collector: "on"
+      max_connections: "1000"
+      max_parallel_workers: "32"
+      max_replication_slots: "32"
+      max_worker_processes: "32"
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+      shared_buffers: 2GB
+      shared_memory_type: mmap
+      shared_preload_libraries: ""
+      wal_keep_size: 512MB
+      wal_receiver_timeout: 5s
+      wal_sender_timeout: 5s
+    syncReplicaElectionConstraint:
+      enabled: false
+  primaryUpdateMethod: restart
+  primaryUpdateStrategy: unsupervised
   resources:
-    requests:
-      memory: 16Gi
-      cpu: 8
     limits:
+      cpu: "16"
       memory: 32Gi
-      cpu: 16
-
+    requests:
+      cpu: "8"
+      memory: 16Gi
+  startDelay: 30
+  stopDelay: 30
   storage:
-    storageClass: wekafs--sdf-k8s01
+    resizeInUseVolumes: true
     size: 500Gi
+    storageClass: wekafs--sdf-k8s01
+  switchoverDelay: 40000000
