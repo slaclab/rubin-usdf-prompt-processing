@@ -39,7 +39,7 @@ spec:
       shared_buffers: 2GB
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
-      max_connections: "2000"
+      max_connections: "3000"
       log_disconnections: "on"
       log_duration: "on"
       log_statement: all
