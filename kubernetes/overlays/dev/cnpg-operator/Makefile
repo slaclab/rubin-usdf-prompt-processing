@@ -1,4 +1,4 @@
-CNPG_VERSION_MAJOR ?= '1.25'
+CNPG_VERSION_MAJOR ?= '1.26'
 CNPG_VERSION_MINOR ?= '1'
 CNPG_NS ?= cnpg-system
 KUBECTL_DEPLOY_CONTEXT ?= 'usdf-prompt-processing-dev'
@@ -22,5 +22,5 @@ apply: ensure-context
 	# CRDs too long
 	kubectl apply --server-side --force-conflicts -f crd/
 	kubectl apply -k .
-	#kubectl apply -f https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.5.0/manifest.yaml
+	kubectl apply -f https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.5.0/manifest.yaml
 	kubectl -n cnpg-system rollout restart deployment/cnpg-controller-manager
