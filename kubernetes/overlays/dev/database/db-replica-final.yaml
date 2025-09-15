@@ -1,0 +1,73 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: s3-store
+spec:
+  configuration:
+    destinationPath: s3://rubin-usdf-apdb-dev
+    endpointURL: https://s3dfrgw.slac.stanford.edu
+    s3Credentials:
+      accessKeyId:
+        name: s3-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: s3-creds
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+      maxParallel: 8
+    data:
+      compression: gzip
+      jobs: 4
+      immediateCheckpoint: true
+  retentionPolicy: 15d
+
+---
+
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: prompt-processing2
+spec:
+  instances: 2
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    enabled: true
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: s3-store
+  primaryUpdateStrategy: unsupervised
+
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:17.5
+  inheritedMetadata:
+    annotations:
+      prometheus.io/scrape: 'true'
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+
+  postgresql:
+    parameters:
+      jit: "off"
+      shared_buffers: 2GB
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+      max_connections: "2000"
+      log_disconnections: "on"
+      log_duration: "on"
+      log_statement: all
+      log_min_duration_statement: 250ms
+
+  resources:
+    requests:
+      memory: 16Gi
+      cpu: 8
+    limits:
+      memory: 32Gi
+      cpu: 16
+
+  storage:
+    storageClass: wekafs--sdf-k8s01
+    size: 1500Gi
+    resizeInUseVolumes: False

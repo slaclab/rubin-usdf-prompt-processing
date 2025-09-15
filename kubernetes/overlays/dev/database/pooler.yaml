@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing-transaction-rw
+  name: prompt-processing-rw
   namespace: database
 spec:
   cluster:
@@ -9,26 +9,19 @@ spec:
   instances: 3
   pgbouncer:
     parameters:
-      default_pool_size: "3000"
+      default_pool_size: "2500"
       idle_transaction_timeout: "0"
       log_connections: "1"
       log_disconnections: "1"
-      max_client_conn: "4000"
-      server_idle_timeout: "60"
+      max_client_conn: "3000"
+      server_idle_timeout: "0"
       tcp_keepalive: "1"
       tcp_keepcnt: "1"
       tcp_keepidle: "1"
       tcp_keepintvl: "1"
       tcp_user_timeout: "21600"
     paused: false
-    poolMode: transaction
-  serviceTemplate:
-    metadata:
-      annotations:
-        metallb.io/address-pool: sdf-services
-    spec:
-      allocateLoadBalancerNodePorts: false
-      type: LoadBalancer
+    poolMode: session
   template:
     metadata:
       annotations:
@@ -56,13 +49,10 @@ spec:
             cpu: "0.1"
             memory: 100Mi
   type: rw
-
----
-
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing-rw
+  name: prompt-processing-transaction-rw
   namespace: database
 spec:
   cluster:
@@ -70,19 +60,25 @@ spec:
   instances: 3
   pgbouncer:
     parameters:
-      default_pool_size: "2500"
+      default_pool_size: "3000"
       idle_transaction_timeout: "0"
       log_connections: "1"
       log_disconnections: "1"
-      max_client_conn: "3000"
-      server_idle_timeout: "0"
+      max_client_conn: "4000"
+      server_idle_timeout: "60"
       tcp_keepalive: "1"
       tcp_keepcnt: "1"
       tcp_keepidle: "1"
       tcp_keepintvl: "1"
       tcp_user_timeout: "21600"
     paused: false
-    poolMode: session
+    poolMode: transaction
+  serviceTemplate:
+    metadata:
+      annotations:
+        metallb.universe.tf/address-pool: sdf-services
+    spec:
+      type: LoadBalancer
   template:
     metadata:
       annotations:
