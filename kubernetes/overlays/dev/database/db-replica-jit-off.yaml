@@ -1,0 +1,64 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: prompt-processing2
+spec:
+  instances: 1
+  primaryUpdateStrategy: unsupervised
+
+  bootstrap:
+    pg_basebackup:                  # “clone” via pg_basebackup + stream
+      source: old-prompt-processing # must match externalClusters[].name
+
+  replica:
+    enabled: false
+    source: old-prompt-processing
+
+  externalClusters:
+  - name: old-prompt-processing      # logical name referenced above
+    connectionParameters:
+      host: prompt-processing-rw     # Service pointing to primary
+      user: streaming_replica        # role with REPLICATION privilege
+    sslKey:
+      name: prompt-processing-replication
+      key: tls.key
+    sslCert:
+      name: prompt-processing-replication
+      key: tls.crt
+    sslRootCert:
+      name: prompt-processing-ca
+      key: ca.crt
+
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:14.4-7
+  inheritedMetadata:
+    annotations:
+      prometheus.io/scrape: 'true'
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+
+  postgresql:
+    parameters:
+      jit: "off"
+      shared_buffers: 2GB
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+      max_connections: "2000"
+      log_disconnections: "on"
+      log_duration: "on"
+      log_statement: all
+      log_min_duration_statement: 250ms
+
+  resources:
+    requests:
+      memory: 16Gi
+      cpu: 8
+    limits:
+      memory: 32Gi
+      cpu: 16
+
+  storage:
+    storageClass: wekafs--sdf-k8s01
+    size: 1500Gi
+    resizeInUseVolumes: False
