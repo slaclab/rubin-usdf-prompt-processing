@@ -5,7 +5,8 @@ metadata:
   namespace: database
 spec:
   immediate: true
+  method: plugin
   schedule: "0 0 0 * * *"
   backupOwnerReference: self
   cluster:
-    name: prompt-processing
+    name: prompt-processing2
