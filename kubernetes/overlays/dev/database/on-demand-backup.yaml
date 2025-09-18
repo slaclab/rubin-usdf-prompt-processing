@@ -1,11 +1,9 @@
 apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
+kind: Backup
 metadata:
-  name: usdf-prompt-processing2-backup
+  name: usdf-prompt-processing2-backup-20250918
   namespace: database
 spec:
-  immediate: true
-  schedule: "0 0 0 * * *"
   cluster:
     name: prompt-processing2
   method: plugin
