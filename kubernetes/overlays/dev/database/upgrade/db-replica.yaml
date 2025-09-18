@@ -11,7 +11,7 @@ spec:
       source: old-prompt-processing # must match externalClusters[].name
 
   replica:
-    enabled: false
+    enabled: true
     source: old-prompt-processing
 
   externalClusters:
@@ -29,25 +29,22 @@ spec:
       name: prompt-processing-ca
       key: ca.crt
 
-  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:14.4-7
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:14.14
   inheritedMetadata:
     annotations:
       prometheus.io/scrape: 'true'
 
-  nodeMaintenanceWindow:
-    inProgress: false
-    reusePVC: true
-
+  enablePDB: true
   postgresql:
     parameters:
       shared_buffers: 2GB
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
       max_connections: "2000"
-      log_disconnections: "on"
-      log_duration: "on"
-      log_statement: all
-      log_min_duration_statement: 250ms
+      log_disconnections: "off"
+      log_duration: "off"
+      log_statement: "none"
+      checkpoint_timeout: "1800"
 
   resources:
     requests:

@@ -2,8 +2,8 @@ namespace: database
 
 resources:
 - ns.yaml
-- cnpg-database.yaml
-- cnpg-pooler.yaml
+- database.yaml
+- pooler.yaml
 - lb-svc.yaml
 - backup.yaml
 

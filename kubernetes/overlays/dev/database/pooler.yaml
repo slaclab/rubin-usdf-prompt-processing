@@ -1,11 +1,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing-rw
+  name: prompt-processing2-rw
   namespace: database
 spec:
   cluster:
-    name: prompt-processing
+    name: prompt-processing2
   instances: 3
   pgbouncer:
     parameters:
@@ -52,11 +52,11 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing-transaction-rw
+  name: prompt-processing2-transaction-rw
   namespace: database
 spec:
   cluster:
-    name: prompt-processing
+    name: prompt-processing2
   instances: 3
   pgbouncer:
     parameters:

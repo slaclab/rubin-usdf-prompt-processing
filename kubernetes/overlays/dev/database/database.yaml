@@ -38,26 +38,23 @@ spec:
       barmanObjectName: s3-store
   primaryUpdateStrategy: unsupervised
 
-  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:17.5
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:16.6
   inheritedMetadata:
     annotations:
       prometheus.io/scrape: 'true'
 
-  nodeMaintenanceWindow:
-    inProgress: false
-    reusePVC: true
+  enablePDB: true
 
   postgresql:
     parameters:
       jit: "off"
-      shared_buffers: 2GB
+      shared_buffers: 8GB
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
-      max_connections: "2000"
-      log_disconnections: "on"
-      log_duration: "on"
-      log_statement: all
-      log_min_duration_statement: 250ms
+      max_connections: "3000"
+      log_disconnections: "off"
+      log_duration: "off"
+      log_statement: "none"
 
   resources:
     requests:
