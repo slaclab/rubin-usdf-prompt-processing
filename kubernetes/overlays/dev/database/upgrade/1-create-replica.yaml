@@ -1,24 +1,16 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: prompt-processing2
+  name: prompt-processing
+  namespace: database
 spec:
-  instances: 2
-  plugins:
-  - name: barman-cloud.cloudnative-pg.io
-    enabled: true
-    isWALArchiver: true
-    parameters:
-      barmanObjectName: s3-store
+  instances: 1
   primaryUpdateStrategy: unsupervised
-
   imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:16.6
   inheritedMetadata:
     annotations:
       prometheus.io/scrape: 'true'
-
   enablePDB: true
-
   postgresql:
     parameters:
       jit: "off"
@@ -29,7 +21,6 @@ spec:
       log_disconnections: "off"
       log_duration: "off"
       log_statement: "none"
-
   resources:
     requests:
       memory: 16Gi
@@ -37,8 +28,27 @@ spec:
     limits:
       memory: 32Gi
       cpu: 16
-
   storage:
     storageClass: wekafs--sdf-k8s01
     size: 1500Gi
     resizeInUseVolumes: False
+  bootstrap:
+    pg_basebackup:
+      source: old-primary
+  replica:
+    enabled: true
+    source: old-primary
+  externalClusters:
+    - name: old-primary
+      connectionParameters:
+        host: prompt-processing2-rw
+        user: streaming_replica
+      sslKey:
+        name: prompt-processing2-replication
+        key: tls.key
+      sslCert:
+        name: prompt-processing2-replication
+        key: tls.crt
+      sslRootCert:
+        name: prompt-processing2-ca
+        key: ca.crt

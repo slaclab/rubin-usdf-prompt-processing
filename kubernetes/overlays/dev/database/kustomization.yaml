@@ -2,6 +2,7 @@ namespace: database
 
 resources:
 - ns.yaml
+- object-store.yaml
 - database.yaml
 - pooler.yaml
 - lb-svc.yaml

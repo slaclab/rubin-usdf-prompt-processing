@@ -1,11 +1,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing2-session-rw
+  name: prompt-processing-session-rw
   namespace: database
 spec:
   cluster:
-    name: prompt-processing2
+    name: prompt-processing
   instances: 3
   pgbouncer:
     parameters:
@@ -27,7 +27,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
       labels:
-        app: prompt-processing2-session-rw-pooler
+        app: prompt-processing-session-rw-pooler
     spec:
       affinity:
         podAntiAffinity:
@@ -55,11 +55,11 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: prompt-processing2-trans-rw
+  name: prompt-processing-trans-rw
   namespace: database
 spec:
   cluster:
-    name: prompt-processing2
+    name: prompt-processing
   instances: 3
   pgbouncer:
     parameters:
@@ -81,7 +81,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
       labels:
-        app: prompt-processing2-trans-rw-pooler
+        app: prompt-processing-trans-rw-pooler
     spec:
       affinity:
         podAntiAffinity:

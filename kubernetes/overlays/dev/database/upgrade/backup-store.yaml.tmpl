@@ -1,0 +1,24 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: ${DB_CLUSTER}-s3-store
+  namespace: ${NS}
+spec:
+  configuration:
+    destinationPath: ${S3_URL} 
+    endpointURL: https://s3dfrgw.slac.stanford.edu
+    s3Credentials:
+      accessKeyId:
+        name: ${DB_CLUSTER}-s3-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: ${DB_CLUSTER}-s3-creds
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+      maxParallel: 8
+    data:
+      compression: gzip
+      jobs: 4
+      immediateCheckpoint: true
+  retentionPolicy: 15d

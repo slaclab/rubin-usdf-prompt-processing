@@ -1,22 +1,16 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: prompt-processing2
+  name: prompt-processing
+  namespace: database
 spec:
   instances: 1
   primaryUpdateStrategy: unsupervised
-
-  #replica:
-  #  enabled: false
-  #  source: old-prompt-processing
-
-  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:16.6
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:17.5
   inheritedMetadata:
     annotations:
       prometheus.io/scrape: 'true'
-
   enablePDB: true
-
   postgresql:
     parameters:
       jit: "off"
@@ -24,11 +18,6 @@ spec:
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
       max_connections: "3000"
-      log_disconnections: "off"
-      log_duration: "off"
-      log_statement: "none"
-
-
   resources:
     requests:
       memory: 16Gi
@@ -36,7 +25,6 @@ spec:
     limits:
       memory: 32Gi
       cpu: 16
-
   storage:
     storageClass: wekafs--sdf-k8s01
     size: 1500Gi
