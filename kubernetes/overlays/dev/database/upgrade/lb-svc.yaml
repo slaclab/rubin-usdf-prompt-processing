@@ -7,17 +7,17 @@ metadata:
     metallb.io/address-pool: sdf-rubin-ingest
     metallb.io/ip-allocated-from-pool: sdf-rubin-ingest
 spec:
-  type: LoadBalancer
-  loadBalancerIP: 172.24.10.49
   allocateLoadBalancerNodePorts: false
+  loadBalancerIP: 172.24.10.49
   ports:
   - name: pgbouncer
     port: 5432
     protocol: TCP
     targetPort: 5432
   selector:
-    cnpg.io/cluster: prompt-processing2
+    cnpg.io/cluster: prompt-processing
     cnpg.io/instanceRole: primary
+  type: LoadBalancer
 
 ---
 
@@ -30,17 +30,17 @@ metadata:
     metallb.io/address-pool: sdf-rubin-ingest
     metallb.io/ip-allocated-from-pool: sdf-rubin-ingest
 spec:
-  type: LoadBalancer
-  loadBalancerIP: 172.24.10.45
   allocateLoadBalancerNodePorts: false
+  loadBalancerIP: 172.24.10.45
   ports:
   - name: pgbouncer
     port: 5432
     protocol: TCP
     targetPort: 5432
   selector:
-    cnpg.io/cluster: prompt-processing2
-    cnpg.io/poolerName: prompt-processing2-session-rw
+    cnpg.io/cluster: prompt-processing
+    cnpg.io/poolerName: prompt-processing-session-rw
+  type: LoadBalancer
 
 ---
 
@@ -53,14 +53,14 @@ metadata:
     metallb.io/address-pool: sdf-rubin-ingest
     metallb.io/ip-allocated-from-pool: sdf-rubin-ingest
 spec:
-  type: LoadBalancer
-  loadBalancerIP: 172.24.10.46
   allocateLoadBalancerNodePorts: false
+  loadBalancerIP: 172.24.10.46
   ports:
   - name: pgbouncer
     port: 5432
     protocol: TCP
     targetPort: 5432
   selector:
-    cnpg.io/cluster: prompt-processing2
-    cnpg.io/poolerName: prompt-processing2-trans-rw
+    cnpg.io/cluster: prompt-processing
+    cnpg.io/poolerName: prompt-processing-trans-rw
+  type: LoadBalancer
