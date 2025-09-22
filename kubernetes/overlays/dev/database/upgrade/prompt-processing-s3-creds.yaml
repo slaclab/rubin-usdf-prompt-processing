@@ -1,9 +1,0 @@
-apiVersion: v1
-data:
-  ACCESS_KEY_ID: NFlIWjM5SkYxV1VRWk9ZSUdZWTc=
-  ACCESS_SECRET_KEY: cThsVGp3Ukx4YVpWa2E0TElycHpEcTZ6c1kyVU5ONFdna0RDN25ydA==
-kind: Secret
-metadata:
-  name: s3-creds
-  namespace: database
-type: Opaque
