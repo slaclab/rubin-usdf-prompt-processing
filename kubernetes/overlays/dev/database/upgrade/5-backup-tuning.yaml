@@ -15,11 +15,12 @@ spec:
     parameters:
       jit: "on"
       shared_buffers: 8GB
-      pg_stat_statements.max: 10000
-      pg_stat_statements.track: "top"
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
       max_connections: "3000"
-      checkpoint_timeout: 3600
-      wal_keep_size: 8GB
+      log_disconnections: "off"
+      log_duration: "off"
+      log_statement: "none"
   resources:
     requests:
       memory: 16Gi
@@ -32,8 +33,8 @@ spec:
     size: 1500Gi
     resizeInUseVolumes: False
   plugins:
-    - parameters:
-        barmanObjectName: prompt-processing-s3-store
-      name: barman-cloud.cloudnative-pg.io
-      enabled: "false"
-      isWALArchiver: "true"
+  - name: barman-cloud.cloudnative-pg.io
+    enabled: true
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: prompt-processing-s3-store

@@ -1,17 +1,17 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: s3-store
+  name: prompt-processing-s3-store
 spec:
   configuration:
     destinationPath: s3://rubin-usdf-apdb-dev
     endpointURL: https://s3dfrgw.slac.stanford.edu
     s3Credentials:
       accessKeyId:
-        name: s3-creds
+        name: prompt-processing-s3-creds
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: s3-creds
+        name: prompt-processing-s3-creds
         key: ACCESS_SECRET_KEY
     wal:
       compression: gzip

@@ -1,27 +1,26 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: prompt-processing2
+  name: prompt-processing
+  namespace: database
 spec:
+  bootstrap:
+    initdb:
+      database: lsst-devl
+      encoding: UTF8
+      localeCType: C
+      localeCollate: C
+      owner: rubin
   instances: 2
-  plugins:
-  - name: barman-cloud.cloudnative-pg.io
-    enabled: true
-    isWALArchiver: true
-    parameters:
-      barmanObjectName: s3-store
   primaryUpdateStrategy: unsupervised
-
-  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:16.6
+  imageName: ghcr.io/lsst-sqre/cnpg-postgres-images:17.5
   inheritedMetadata:
     annotations:
       prometheus.io/scrape: 'true'
-
   enablePDB: true
-
   postgresql:
     parameters:
-      jit: "off"
+      jit: "on"
       shared_buffers: 8GB
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
@@ -29,7 +28,6 @@ spec:
       log_disconnections: "off"
       log_duration: "off"
       log_statement: "none"
-
   resources:
     requests:
       memory: 16Gi
@@ -37,8 +35,13 @@ spec:
     limits:
       memory: 32Gi
       cpu: 16
-
   storage:
     storageClass: wekafs--sdf-k8s01
     size: 1500Gi
     resizeInUseVolumes: False
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    enabled: true
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: prompt-processing-s3-store
