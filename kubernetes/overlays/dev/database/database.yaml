@@ -28,6 +28,7 @@ spec:
       log_disconnections: "off"
       log_duration: "off"
       log_statement: "none"
+      idle_in_transaction_session_timeout: 14400000
   resources:
     requests:
       memory: 16Gi
