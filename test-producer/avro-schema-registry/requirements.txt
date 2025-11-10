@@ -1,5 +1,0 @@
-aiokafka
-dataclasses-avroschema==0.37.0
-httpx
-kafkit[httpx]
-kafkit
